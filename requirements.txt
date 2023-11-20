@@ -9,6 +9,13 @@ asgiref==3.7.2
 astroid==2.15.8
     # via flake8-django
 django==4.2.7
+    # via
+    #   -r requirements.in
+    #   django-model-utils
+    #   django-phonenumber-field
+django-model-utils==4.3.1
+    # via -r requirements.in
+django-phonenumber-field==7.2.0
     # via -r requirements.in
 flake8==6.1.0
     # via
