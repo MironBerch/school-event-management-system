@@ -1,0 +1,10 @@
+[flake8]
+max-line-length = 100
+ignore =
+    # Line break occurred after a binary operator
+    W504,
+    # Double quotes found but single quotes preferred
+    Q000
+exclude =
+    .venv*,
+    */migrations/*,
