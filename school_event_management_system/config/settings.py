@@ -22,6 +22,7 @@ INSTALLED_APPS = [
 
     # django 3rd party
     'phonenumber_field',
+    'django_bootstrap5',
 
     # local
     'accounts.apps.AccountsConfig',
@@ -42,7 +43,11 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            BASE_DIR / 'accounts/templates',
+            BASE_DIR / 'events/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,6 +110,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = 'static/'
+
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static',
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static'
+
+# Media files
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Login redirect urls
+
+LOGIN_URL = 'signin'
 
 # Default primary key field type
 

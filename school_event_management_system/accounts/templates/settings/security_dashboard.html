@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Вход и безопасность &bull; Настройки учетной записи &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex align-items-center py-4 bg-body-tertiary">
+        <div class="form w-100 m-auto">
+            <div class="text-center">
+                <a href="{% url 'settings_dashboard' %}">Вернуться к настройкам</a>
+            </div>
+            <h1 class="h1 mb-3 fw-large text-center">Вход и безопасность</h1>
+            <div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <a href="{% url 'password_change' %}" class="">
+                            <h2 class="h2">Обновить пароль</h2>
+                            <p>Обновите свой старый пароль</p>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        {% if not request.user.is_email_confirmed %}
+                            <a href="{% url 'confirm_email' %}" class="">
+                                <h2 class="h2">Подтвердите ваш адрес электронной почты</h2>
+                                <p>Подтвердить</p>
+                            </a>
+                        {% else %}
+                            <a class="">
+                                <h2 class="h2">Подтвердите ваш адрес электронной почты</h2>
+                                <p>Подтверждена</p>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

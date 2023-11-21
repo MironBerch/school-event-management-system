@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}
+    Личная информация &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="">
+        <div class="text-center">
+            <a href="{% url 'settings_dashboard' %}">Вернуться к настройкам</a>
+        </div>
+        <h1 class="h1 text-center">Личная информация</h1>
+        <div class="d-flex align-items-center py-4 bg-body-tertiary">
+            <form class="form w-100 m-auto" action="" method="POST">
+                {% csrf_token %}
+                {{ profile_form.media }}
+                {% bootstrap_form user_info_form %}
+                {% bootstrap_form profile_form %}
+                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

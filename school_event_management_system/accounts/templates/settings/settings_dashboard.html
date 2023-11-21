@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Панель настроек &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex align-items-center py-4 bg-body-tertiary">
+        <div class="form w-100 m-auto">
+            <h1 class="h1 mb-3 fw-large text-center">Настройки учетной записи</h1>
+            <div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <a href="{% url 'user_info_edit' %}">
+                            <h2 class="h2">Личная информация</h2>
+                            <p>Укажите личные данные и как мы можем с вами связаться</p>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <a href="{% url 'security_dashboard' %}" class="">
+                            <h2 class="h2">Вход и безопасность</h2>
+                            <p>Обновите пароль и защитите свою учетную запись</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

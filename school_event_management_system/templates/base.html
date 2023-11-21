@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% load static%}
+<html data-bs-theme="auto">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset='utf-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    </head>
+    <body>
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <main>
+            {% block content %}
+            {% endblock %}
+            {% include 'components/theme.html' %}
+        </main>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'js/color-modes.js' %}"></script>
+    </body>
+</html>

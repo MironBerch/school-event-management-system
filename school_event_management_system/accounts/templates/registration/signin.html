@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}
+    Вход &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex align-items-center py-4 bg-body-tertiary">
+        <div class="form w-100 m-auto">
+            <form method="POST" class="form w-100 m-auto">
+                {% csrf_token %}
+                <h1 class="h3 mb-3 fw-norma text-center">Вход</h1>
+                {% bootstrap_form form %}
+                <p class="reset-password">
+                    Забыли пароль?
+                    <a href="{% url 'password_reset' %}">Нажмите здесь, чтобы сбросить его</a>
+                </p>
+                <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

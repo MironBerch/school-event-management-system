@@ -11,8 +11,11 @@ astroid==2.15.8
 django==4.2.7
     # via
     #   -r requirements.in
+    #   django-bootstrap5
     #   django-model-utils
     #   django-phonenumber-field
+django-bootstrap5==23.3
+    # via -r requirements.in
 django-model-utils==4.3.1
     # via -r requirements.in
 django-phonenumber-field==7.2.0
@@ -36,6 +39,8 @@ pycodestyle==2.11.1
     # via flake8
 pyflakes==3.1.0
     # via flake8
+six==1.16.0
+    # via -r requirements.in
 sqlparse==0.4.4
     # via django
 typing-extensions==4.8.0
