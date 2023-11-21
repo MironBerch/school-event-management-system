@@ -16,3 +16,7 @@ __pycache__/
 # pytest
 
 *.pytest_cache
+
+# database
+
+db.sqlite3

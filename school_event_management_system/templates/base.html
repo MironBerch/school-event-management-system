@@ -12,6 +12,7 @@
     <body>
         <script src="{% static 'js/jquery.min.js' %}"></script>
         <main>
+            {% include 'components/messages.html' %}
             {% block content %}
             {% endblock %}
             {% include 'components/theme.html' %}

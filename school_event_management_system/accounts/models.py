@@ -1,3 +1,5 @@
+from os import environ
+
 from model_utils import FieldTracker
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -101,10 +103,16 @@ class Profile(models.Model):
         blank=True,
         null=True,
     )
+    from_current_school = models.BooleanField(
+        verbose_name=_(f"из {environ.get('SCHOOL_NAME')}"),
+        blank=True,
+        default=True,
+    )
     school = models.CharField(
         verbose_name=_('школа'),
         blank=True,
         max_length=255,
+        default=environ.get('SCHOOL_NAME'),
     )
     YEAR_CHOICES = [
         (1, '1-й класс'),

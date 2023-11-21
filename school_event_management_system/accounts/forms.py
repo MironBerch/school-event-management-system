@@ -1,3 +1,5 @@
+from os import environ
+
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 from django import forms
@@ -207,6 +209,7 @@ class UserInfoForm(forms.ModelForm):
             'name',
             'surname',
             'patronymic',
+            'role',
         )
 
     def __init__(self, *args, **kwargs):
@@ -215,6 +218,7 @@ class UserInfoForm(forms.ModelForm):
         self.fields['name'].label = 'Имя'
         self.fields['surname'].label = 'Фамилия'
         self.fields['patronymic'].label = 'Отчество'
+        self.fields['role'].label = 'Роль'
 
 
 class ProfileForm(forms.ModelForm):
@@ -224,9 +228,10 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = (
             'date_of_birth',
-            'school',
             'year_of_study',
             'phone_number',
+            'from_current_school',
+            'school',
         )
         widgets = {
             'date_of_birth': DatePickerInput(
@@ -240,13 +245,27 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.fields['date_of_birth'].label = 'Дата рождения'
         self.fields['school'].label = 'Школа'
+        self.fields['from_current_school'].label = f"из {environ.get('SCHOOL_NAME')}"
         self.fields['year_of_study'].label = 'Год обучения'
         self.fields['phone_number'].label = 'Номер телефона'
+
+        if self.instance and self.instance.from_current_school:
+            self.fields['school'].widget = forms.HiddenInput()
+            self.fields['school'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        from_current_school = cleaned_data.get('from_current_school')
+        if not from_current_school:
+            cleaned_data['school'] = ''
+        if from_current_school:
+            cleaned_data['school'] = environ.get('SCHOOL_NAME')
+        return cleaned_data
 
     def clean_date_of_birth(self):
         """Handles input of date_of_birth field.
 
-        date of birth can't be in the future, Host must be at least 18 years old
+        date of birth can't be in the future, must be at least 5 years old
         """
         date_of_birth = self.cleaned_data['date_of_birth']
         if date_of_birth:

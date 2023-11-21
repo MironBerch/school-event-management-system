@@ -35,11 +35,14 @@ django==4.2.7
     #   -r requirements.in
     #   django-bootstrap-datepicker-plus
     #   django-bootstrap5
+    #   django-debug-toolbar
     #   django-model-utils
     #   django-phonenumber-field
 django-bootstrap-datepicker-plus==5.0.4
     # via -r requirements.in
 django-bootstrap5==23.3
+    # via -r requirements.in
+django-debug-toolbar==4.2.0
     # via -r requirements.in
 django-model-utils==4.3.1
     # via -r requirements.in
@@ -83,7 +86,9 @@ six==1.16.0
     #   -r requirements.in
     #   python-dateutil
 sqlparse==0.4.4
-    # via django
+    # via
+    #   django
+    #   django-debug-toolbar
 typing-extensions==4.8.0
     # via
     #   asgiref

@@ -1,5 +1,6 @@
 from os import environ
 from pathlib import Path
+from socket import gethostbyname_ex, gethostname
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # django 3rd party
+    'debug_toolbar',
     'phonenumber_field',
     'django_bootstrap5',
     'bootstrap_datepicker_plus',
@@ -39,6 +41,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -146,3 +150,8 @@ EMAIL_HOST_PASSWORD = environ.get('EMAIL_HOST_PASSWORD')
 # Celery
 
 CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
+
+# INTERNAL IPS configuration
+
+hostname, _, ips = gethostbyname_ex(gethostname())
+INTERNAL_IPS = [ip[: ip.rfind('.')] + '.1' for ip in ips] + ['127.0.0.1', '10.0.2.2']
