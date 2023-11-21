@@ -2,7 +2,7 @@ from model_utils import FieldTracker
 from phonenumber_field.modelfields import PhoneNumberField
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.core.validators import RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -106,7 +106,32 @@ class Profile(models.Model):
         blank=True,
         max_length=255,
     )
+    YEAR_CHOICES = [
+        (1, '1-й класс'),
+        (2, '2-й класс'),
+        (3, '3-й класс'),
+        (4, '4-й класс'),
+        (5, '5-й класс'),
+        (6, '6-й класс'),
+        (7, '7-й класс'),
+        (8, '8-й класс'),
+        (9, '9-й класс'),
+        (10, '10-й класс'),
+        (11, '11-й класс'),
+    ]
+    year_of_study = models.SmallIntegerField(
+        verbose_name=_('год обучения'),
+        blank=True,
+        null=True,
+        choices=YEAR_CHOICES,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(11),
+        ],
+    )
     phone_number = PhoneNumberField(
+        verbose_name=_('номер телефона'),
+        blank=True,
         validators=[
             RegexValidator(
                 regex=r'^\+?[0-9]{7,15}$',

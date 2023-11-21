@@ -1,5 +1,5 @@
 # Base builder image
-FROM python:3.12-alpine as builder
+FROM python:3.12-alpine
 
 # Configure environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -14,18 +14,7 @@ COPY ./requirements.txt /app/requirements.txt
 
 # Install project dependencies
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# Base image
-FROM python:3.12-alpine
-
-# Configure environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH /app
-
-# Copy project dependencies
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
