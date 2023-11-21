@@ -23,9 +23,12 @@ INSTALLED_APPS = [
     # django 3rd party
     'phonenumber_field',
     'django_bootstrap5',
+    'bootstrap_datepicker_plus',
 
     # local
     'accounts.apps.AccountsConfig',
+    'mailings.apps.MailingsConfig',
+    'common.apps.CommonConfig',
 ]
 
 MIDDLEWARE = [

@@ -4,16 +4,23 @@
 #
 #    pip-compile requirements.in
 #
+annotated-types==0.6.0
+    # via pydantic
 asgiref==3.7.2
     # via django
 astroid==2.15.8
     # via flake8-django
+async-timeout==4.0.3
+    # via redis
 django==4.2.7
     # via
     #   -r requirements.in
+    #   django-bootstrap-datepicker-plus
     #   django-bootstrap5
     #   django-model-utils
     #   django-phonenumber-field
+django-bootstrap-datepicker-plus==5.0.4
+    # via -r requirements.in
 django-bootstrap5==23.3
     # via -r requirements.in
 django-model-utils==4.3.1
@@ -37,8 +44,14 @@ pep8-naming==0.13.3
     # via -r requirements.in
 pycodestyle==2.11.1
     # via flake8
+pydantic==2.5.1
+    # via django-bootstrap-datepicker-plus
+pydantic-core==2.14.3
+    # via pydantic
 pyflakes==3.1.0
     # via flake8
+redis==5.0.1
+    # via -r requirements.in
 six==1.16.0
     # via -r requirements.in
 sqlparse==0.4.4
@@ -47,5 +60,8 @@ typing-extensions==4.8.0
     # via
     #   asgiref
     #   astroid
+    #   django-bootstrap-datepicker-plus
+    #   pydantic
+    #   pydantic-core
 wrapt==1.16.0
     # via astroid
