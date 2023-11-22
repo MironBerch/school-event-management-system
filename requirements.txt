@@ -67,6 +67,8 @@ pep8-naming==0.13.3
     # via -r requirements.in
 phonenumbers==8.13.25
     # via -r requirements.in
+pillow==10.1.0
+    # via -r requirements.in
 prompt-toolkit==3.0.41
     # via click-repl
 pycodestyle==2.11.1
