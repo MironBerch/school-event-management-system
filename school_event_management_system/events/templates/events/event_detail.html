@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ event.name }} &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="">
+        <h1 class="h1 text-center">{{ event.name }}</h1>
+        <div class="d-flex align-items-center py-4 bg-body-tertiary">
+            <form class="form w-100 m-auto" action="">
+                <a href="">Регистрация</a>
+                {% if event.image %}
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: {{ event.name }}" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <rect width="100%" height="100%" fill="#55595c"/>
+                        <image xlink:href="{{ event.image.url }}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" focusable="false" />
+                    </svg>
+                {% endif %}
+                name: {{ event.name }}<br>
+                description: {{ event.description }}<br>
+                slug: {{ event.slug }}<br>
+                description: {{ event.description }}<br>
+                maximum_number_of_team_members: {{ event.maximum_number_of_team_members }}<br>
+                minimum_number_of_team_members: {{ event.minimum_number_of_team_members }}<br>
+                get_status_display: {{ event.get_status_display }}<br>
+                get_type_display: {{ event.get_type_display }}<br>
+                get_stage_display: {{ event.get_stage_display }}<br>
+                date_of_starting_registration: {{ event.date_of_starting_registration }}<br>
+                date_of_ending_registration: {{ event.date_of_ending_registration }}<br>
+                date_of_starting_event: {{ event.date_of_starting_event }}<br>
+            </form>
+        </div>
+    </div>
+{% endblock %}
