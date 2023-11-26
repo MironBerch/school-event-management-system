@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}
+    регистрация на {{ event.name }} &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex align-items-center py-4 bg-body-tertiary">
+        {{ event.name }}
+        <div class="d-flex align-items-center py-4 bg-body-tertiary">
+            <form class="form w-100 m-auto" action="" method="POST">
+                {% csrf_token %}
+                {% if event.type == 'Индивидуальное' %}
+                    
+                    {% bootstrap_form participant_form %}
+                {% else %}
+                {% bootstrap_form team_form %}
+                    {% bootstrap_form team_participants_form %}
+                {% endif %}
+                {% bootstrap_form supervisor_form %}
+                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

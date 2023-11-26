@@ -9,7 +9,7 @@
         <h1 class="h1 text-center">{{ event.name }}</h1>
         <div class="d-flex align-items-center py-4 bg-body-tertiary">
             <form class="form w-100 m-auto" action="">
-                <a href="">Регистрация</a>
+                <a href="{% url 'register_on_event' slug=event.slug %}">Регистрация</a>
                 {% if event.image %}
                     <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: {{ event.name }}" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <rect width="100%" height="100%" fill="#55595c"/>
