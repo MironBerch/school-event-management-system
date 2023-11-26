@@ -1,6 +1,4 @@
-from phonenumber_field.modelfields import PhoneNumberField
-
-from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -120,81 +118,17 @@ class Event(models.Model):
         return self.name
 
 
-class Participant(models.Model):
-    event = models.ForeignKey(
-        Event,
-        verbose_name=_('мероприятие'),
-        on_delete=models.CASCADE,
-        related_name='participants',
-    )
-    user = models.OneToOneField(
-        User,
-        verbose_name=_('пользователь'),
-        on_delete=models.CASCADE,
-    )
-    team = models.ForeignKey(
-        'Team',
-        verbose_name=_('команда'),
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='participants',
-    )
-
-    class Meta:
-        verbose_name = _('участник')
-        verbose_name_plural = _('участники')
-
-    def __str__(self):
-        return f'{self.user} {self.event}'
-
-
-class Supervisor(models.Model):
-    team = models.OneToOneField(
-        'Team',
-        verbose_name=_('команда'),
-        on_delete=models.CASCADE,
-    )
-    full_name = models.CharField(
-        verbose_name=_('ФИО куратора'),
-        max_length=255,
-    )
-    email = models.EmailField(
-        verbose_name=_('email куратора'),
-        max_length=100,
-    )
-    phone_number = PhoneNumberField(
-        verbose_name=_('номер телефона'),
-        blank=True,
-        validators=[
-            RegexValidator(
-                regex=r'^\+?[0-9]{7,15}$',
-                message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
-            )
-        ]
-    )
-    user = models.ForeignKey(
-        User,
-        verbose_name=_('пользователь-руководитель'),
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = _('руководитель')
-        verbose_name_plural = _('руководители')
-
-    def __str__(self):
-        return self.full_name
-
-
 class Team(models.Model):
     event = models.ForeignKey(
         Event,
         verbose_name=_('мероприятие'),
         on_delete=models.CASCADE,
         related_name='teams',
+    )
+    supervisor = models.ForeignKey(
+        User,
+        verbose_name=_('руководитель'),
+        on_delete=models.CASCADE,
     )
     name = models.CharField(
         verbose_name=_('название команды'),
@@ -207,3 +141,41 @@ class Team(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Participant(models.Model):
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_('мероприятие'),
+        on_delete=models.CASCADE,
+        related_name='participants',
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name=_('пользователь'),
+        on_delete=models.CASCADE,
+        related_name='participant',
+    )
+    team = models.ForeignKey(
+        Team,
+        verbose_name=_('команда'),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='participants',
+    )
+    supervisor = models.ForeignKey(
+        User,
+        verbose_name=_('руководитель'),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='supervised_participants',
+    )
+
+    class Meta:
+        verbose_name = _('участник')
+        verbose_name_plural = _('участники')
+
+    def __str__(self):
+        return f'{self.user} {self.event}'

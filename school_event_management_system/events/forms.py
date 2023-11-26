@@ -19,3 +19,11 @@ class ParticipantRegisterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ParticipantRegisterForm, self).__init__(*args, **kwargs)
         self.fields['fio'].label = 'ФИО участника'
+
+
+class SupervisorRegisterForm(forms.Form):
+    fio = forms.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super(SupervisorRegisterForm, self).__init__(*args, **kwargs)
+        self.fields['fio'].label = 'ФИО руководителя'
