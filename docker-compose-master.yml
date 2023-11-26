@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  server:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    command: >
+      sh -c "cd /home/app/web/school_event_management_system/
+      && python manage.py migrate --noinput
+      && python manage.py collectstatic --noinput
+      && gunicorn --reload -c ../configuration/gunicorn_config.py config.wsgi:application"
+    expose:
+      - 8000
+    volumes:
+      - static_volume:/home/app/web/school_event_management_system/static
+      - media_volume:/home/app/web/school_event_management_system/media
+    env_file:
+      - ${ENV}
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    env_file:
+      - ${ENV}
+    ports:
+      - "6380:6379"
+
+  celery:
+    restart: always
+    env_file:
+      - ${ENV}
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    command: >
+      sh -c "cd /home/app/web/school_event_management_system/
+      && celery -A config worker -l info"
+    links:
+      - redis
+    depends_on:
+      - redis
+      - server
+
+  nginx:
+    build: ./configuration/nginx
+    volumes:
+      - static_volume:/home/app/web/school_event_management_system/static
+      - media_volume:/home/app/web/school_event_management_system/media
+    ports:
+      - 80:80
+    depends_on:
+      - server
+
+volumes:
+  static_volume:
+  media_volume:

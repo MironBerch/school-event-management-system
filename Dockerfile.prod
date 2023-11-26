@@ -1,0 +1,45 @@
+# BUILDER
+
+FROM python:3.12-alpine as builder
+
+WORKDIR /app
+
+# Configure environment variables
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Copy project files
+COPY . .
+
+# Copy requirements files
+COPY ./requirements.txt /app/requirements.txt
+
+# Install project dependencies
+RUN pip install --upgrade pip
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+
+# FINAL
+
+FROM python:3.12-alpine
+
+RUN mkdir -p /home/app
+RUN addgroup -S app && adduser -S app -G app
+
+ENV APP_HOME=/home/app/web
+
+RUN mkdir $APP_HOME
+
+WORKDIR $APP_HOME
+
+COPY --from=builder /usr/src/app/wheels /wheels
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
+COPY . $APP_HOME
+
+RUN chown -R app:app $APP_HOME
+
+USER app
