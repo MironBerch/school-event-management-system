@@ -1,7 +1,7 @@
 from typing import Optional, Union
 
 from django.contrib.auth.models import Group
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template, render_to_string
 from django.utils.encoding import force_bytes, force_str
@@ -105,3 +105,21 @@ def update_user_email_confirmation_status(user: User, is_email_confirmed: bool) 
     user.is_email_confirmed = is_email_confirmed
     user.save(update_fields=['is_email_confirmed'])
     return user
+
+
+def get_user_by_fio(fio: str) -> User | None:
+    fio_list = fio.strip().split(' ')
+    try:
+        if len(fio_list) == 3:
+            return User.objects.get(
+                Q(surname=fio_list[0]) &
+                Q(name=fio_list[1]) &
+                Q(patronymic=fio_list[2])
+            )
+        else:
+            return User.objects.get(
+                Q(surname=fio_list[0]) &
+                Q(name=fio_list[1])
+            )
+    except User.DoesNotExist:
+        return None
