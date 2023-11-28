@@ -179,3 +179,21 @@ class Participant(models.Model):
 
     def __str__(self):
         return f'{self.user} {self.event}'
+
+
+class EventDiplomas(models.Model):
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_('мероприятие'),
+        on_delete=models.CASCADE,
+    )
+    url = models.URLField(
+        verbose_name=_('ссылка на дипломы'),
+    )
+
+    class Meta:
+        verbose_name = _('Дипломы мероприятия')
+        verbose_name_plural = _('Дипломы мероприятий')
+
+    def __str__(self):
+        return f'{self.event}'

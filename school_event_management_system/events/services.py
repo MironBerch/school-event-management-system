@@ -2,7 +2,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from accounts.models import User
-from events.models import Event, Participant, Team
+from events.models import Event, EventDiplomas, Participant, Team
 
 
 def get_published_events() -> QuerySet[Event]:
@@ -48,4 +48,12 @@ def join_event(
         event=event,
         user=user,
         supervisor=supervisor,
+    )
+
+
+def get_user_diplomas(user: User) -> QuerySet[EventDiplomas]:
+    return EventDiplomas.objects.filter(
+        event_id__in=Participant.objects.filter(
+            user=user,
+        ).values_list('event_id', flat=True)
     )

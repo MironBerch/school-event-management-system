@@ -10,6 +10,7 @@ from events.services import (
     create_team,
     get_event_by_slug,
     get_published_events,
+    get_user_diplomas,
     join_event,
     join_team,
 )
@@ -142,4 +143,21 @@ class RegisterOnEventView(
                 'team_form': self.team_form,
                 'team_participants_form': self.team_participants_form,
             }
+        )
+
+
+class DiplomasListView(
+    LoginRequiredMixin,
+    TemplateResponseMixin,
+    View,
+):
+    """List view of diplomas that the user received for participating in events."""
+
+    template_name = 'diplomas/diploma_list.html'
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        return self.render_to_response(
+            context={
+                'diplomas': get_user_diplomas(user=request.user),
+            },
         )

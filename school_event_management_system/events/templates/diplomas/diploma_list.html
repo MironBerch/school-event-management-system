@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Дипломы &bull;
+{% endblock %}
+
+{% block content %}
+    <div style="margin-left: 10px; margin-right: 10px;">
+        <div class="album py-5 bg-body-tertiary">
+            <div class="container">
+                <div class="row g-3">
+                    {% for diploma in diplomas %}
+                        <div class="card">
+                            <div class="card-body">
+                                {{ diploma.event }} <a href="{{ diploma.url }}">Просмотреть дипломы участников</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

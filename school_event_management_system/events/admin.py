@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from events.models import Event, Participant, Team
+from events.models import Event, EventDiplomas, Participant, Team
 
 
 @admin.register(Event)
@@ -110,3 +110,9 @@ class TeamAdmin(admin.ModelAdmin):
         'event',
         'supervisor',
     )
+
+
+@admin.register(EventDiplomas)
+class EventDiplomasAdmin(admin.ModelAdmin):
+    list_display = ('event', )
+    search_fields = ('event__name', )

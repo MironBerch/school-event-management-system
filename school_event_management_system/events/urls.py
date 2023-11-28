@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from events.views import EventDetailView, EventListView, RegisterOnEventView
+from events.views import DiplomasListView, EventDetailView, EventListView, RegisterOnEventView
 
 urlpatterns = [
     path(
@@ -20,5 +20,12 @@ urlpatterns = [
             RegisterOnEventView.as_view(),
         ),
         name='register_on_event',
+    ),
+
+    # diplomas
+    path(
+        route='diplomas/',
+        view=DiplomasListView.as_view(),
+        name='diplomas_list',
     ),
 ]
