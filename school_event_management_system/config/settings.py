@@ -134,6 +134,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Login redirect urls
 
 LOGIN_URL = 'signin'
+LOGIN_REDIRECT_URL = 'events_list'
 
 # Default primary key field type
 

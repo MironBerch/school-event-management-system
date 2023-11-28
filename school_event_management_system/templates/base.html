@@ -12,10 +12,12 @@
     <body>
         <script src="{% static 'js/jquery.min.js' %}"></script>
         <main>
+            {% include 'components/header.html' %}
             {% include 'components/messages.html' %}
             {% block content %}
             {% endblock %}
             {% include 'components/theme.html' %}
+            {% include 'components/footer.html' %}
         </main>
         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'js/color-modes.js' %}"></script>
