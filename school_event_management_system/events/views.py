@@ -33,6 +33,23 @@ class EventListView(
         )
 
 
+class EventArchiveView(
+    LoginRequiredMixin,
+    TemplateResponseMixin,
+    View,
+):
+    """View list of archived events."""
+
+    template_name = 'events/events_archive.html'
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        return self.render_to_response(
+            context={
+                'events': get_published_events(),
+            },
+        )
+
+
 class EventDetailView(
     LoginRequiredMixin,
     TemplateResponseMixin,
@@ -67,7 +84,6 @@ class RegisterOnEventView(
         event = get_event_by_slug(slug=slug)
         self.team_participants_form = TeamParticipantsForm(
             data=request.POST or None,
-            user=request.user,
             minimum_number_of_team_members=event.minimum_number_of_team_members,
             maximum_number_of_team_members=event.maximum_number_of_team_members,
         )
@@ -106,7 +122,7 @@ class RegisterOnEventView(
                     ),
                     event=event,
                 )
-                return redirect('/')
+                return redirect('event_detail', slug=event.slug)
         else:
             if (
                 self.team_participants_form.is_valid() and
@@ -133,7 +149,7 @@ class RegisterOnEventView(
                             )
                         else:
                             pass
-                return redirect('/')
+                return redirect('event_detail', slug=event.slug)
 
         return self.render_to_response(
             context={

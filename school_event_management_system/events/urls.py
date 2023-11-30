@@ -1,13 +1,24 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from events.views import DiplomasListView, EventDetailView, EventListView, RegisterOnEventView
+from events.views import (
+    DiplomasListView,
+    EventArchiveView,
+    EventDetailView,
+    EventListView,
+    RegisterOnEventView,
+)
 
 urlpatterns = [
     path(
         route='events/',
         view=EventListView.as_view(),
         name='events_list',
+    ),
+    path(
+        route='events/archive/',
+        view=EventArchiveView.as_view(),
+        name='events_archive',
     ),
     path(
         route='event/<slug:slug>/',

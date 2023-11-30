@@ -63,13 +63,13 @@ def create_fake_events(coefficient: float = 1) -> None:
             if name not in used_names:
                 used_names.add(name)
                 break
-        maximum_number_of_team_members = randint(0, 100)
+        maximum_number_of_team_members = randint(2, 8)
         event = Event.objects.create(
             name=name,
             slug=slugify(name),
             description=faker.paragraph(),
             maximum_number_of_team_members=maximum_number_of_team_members,
-            minimum_number_of_team_members=randint(0, maximum_number_of_team_members),
+            minimum_number_of_team_members=randint(1, maximum_number_of_team_members),
             status=choice(EventStatusChoices.values),
             type=choice(EventTypeChoices.values),
             stage=choice(EventStageChoices.values),

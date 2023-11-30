@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Список мероприятий &bull;
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Список мероприятий</h1>
+    <br>
+    <div class="container mx-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Название</th>
+                <th scope="col">Тип</th>
+                <th scope="col">Этап</th>
+                </tr>
+            </thead>
+            {% for event in events %}
+                <tbody>
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td><a href="{% url 'event_detail' event.slug %}">{{ event.name }}</a></td>
+                        <td>{{ event.get_type_display }}</td>
+                        <td>{{ event.get_stage_display }}</td>
+                    </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
