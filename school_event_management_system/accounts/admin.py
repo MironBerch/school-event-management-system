@@ -1,10 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from accounts.forms import AdminUserChangeForm, SignUpForm
 from accounts.models import Profile, User
+
+admin.site.unregister(Group)
 
 
 class ProfileInline(admin.StackedInline):
@@ -16,8 +19,8 @@ class UserAdmin(UserAdmin):
     inlines = [ProfileInline]
     list_display = (
         'email',
-        'name',
         'surname',
+        'name',
         'patronymic',
         'get_profile_admin_link',
     )
@@ -51,8 +54,8 @@ class UserAdmin(UserAdmin):
         (
             'Личная информация', {
                 'fields': (
-                    'name',
                     'surname',
+                    'name',
                     'patronymic',
                 ),
             },

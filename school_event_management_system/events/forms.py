@@ -1,11 +1,26 @@
 from django import forms
 
+from accounts.services import is_user_with_fio_exist
+from events.services import team_with_name_exist_in_event
+
 
 class TeamForm(forms.Form):
     name = forms.CharField(
         max_length=255,
         label='Название команды*',
     )
+
+    def __init__(self, event, *args, **kwargs):
+        self.event = event
+        super(TeamForm, self).__init__(*args, **kwargs)
+
+    def clean_name(self):
+        team_name = str(self.cleaned_data['name'])
+        if team_with_name_exist_in_event(event=self.event, team_name=team_name):
+            raise forms.ValidationError(
+                'Команда с таким названием уже участвует мероприятии',
+            )
+        return team_name
 
 
 class ParticipantForm(forms.Form):
@@ -30,6 +45,12 @@ class SupervisorForm(forms.Form):
         label='ФИО руководителя*',
     )
 
+    def clean_fio(self):
+        fio = self.cleaned_data.get('fio')
+        if not is_user_with_fio_exist(fio):
+            raise forms.ValidationError('Нет пользователя с таким ФИО')
+        return fio
+
 
 class TeamParticipantsForm(forms.Form):
     def __init__(
@@ -40,6 +61,7 @@ class TeamParticipantsForm(forms.Form):
             **kwargs,
     ):
         super(TeamParticipantsForm, self).__init__(*args, **kwargs)
+        self.maximum_number_of_team_members = maximum_number_of_team_members
         for i in range(1, maximum_number_of_team_members + 1):
             required = i <= minimum_number_of_team_members
             self.fields[f'participant_{i}'] = forms.CharField(
@@ -47,6 +69,16 @@ class TeamParticipantsForm(forms.Form):
                 label=f'ФИО {i}-го участника' + ('*' if required else ''),
                 required=required,
             )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        for i in range(1, self.maximum_number_of_team_members + 1):
+            field_name = f'participant_{i}'
+            fio = cleaned_data.get(field_name)
+            if fio:
+                if not is_user_with_fio_exist(fio):
+                    self.add_error(field_name, 'Нет пользователя с таким ФИО')
+        return cleaned_data
 
 
 class ClassTeamParticipantsForm(forms.Form):
@@ -62,6 +94,7 @@ class ClassTeamParticipantsForm(forms.Form):
             **kwargs,
     ):
         super(TeamParticipantsForm, self).__init__(*args, **kwargs)
+        self.maximum_number_of_team_members = maximum_number_of_team_members
         for i in range(1, maximum_number_of_team_members + 1):
             required = i <= minimum_number_of_team_members
             self.fields[f'participant_{i}'] = forms.CharField(
@@ -69,3 +102,13 @@ class ClassTeamParticipantsForm(forms.Form):
                 label=f'ФИО {i}-го участника' + ('*' if required else ''),
                 required=required,
             )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        for i in range(1, self.maximum_number_of_team_members + 1):
+            field_name = f'participant_{i}'
+            fio = cleaned_data.get(field_name)
+            if fio:
+                if not is_user_with_fio_exist(fio):
+                    self.add_error(field_name, 'Нет пользователя с таким ФИО')
+        return cleaned_data

@@ -88,6 +88,7 @@ class RegisterOnEventView(
             maximum_number_of_team_members=event.maximum_number_of_team_members,
         )
         self.team_form = TeamForm(
+            event=event,
             data=request.POST or None,
         )
         self.supervisor_form = SupervisorForm(

@@ -4,6 +4,7 @@ from django.apps import AppConfig
 class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'accounts'
+    verbose_name = 'Учётные записи'
 
     def ready(self):
         from accounts import signals  # noqa: F401, F403

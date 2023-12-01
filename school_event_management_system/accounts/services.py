@@ -108,7 +108,9 @@ def update_user_email_confirmation_status(user: User, is_email_confirmed: bool) 
 
 
 def get_user_by_fio(fio: str) -> User | None:
-    fio_list = fio.strip().split(' ')
+    fio_list = ' '.join(fio.strip().split()).split(' ')
+    if len(fio_list) < 2:
+        return None
     try:
         if len(fio_list) == 3:
             return User.objects.get(
@@ -123,3 +125,23 @@ def get_user_by_fio(fio: str) -> User | None:
             )
     except User.DoesNotExist:
         return None
+
+
+def is_user_with_fio_exist(fio: str) -> bool:
+    fio_list = ' '.join(fio.strip().split()).split(' ')
+    if len(fio_list) < 2:
+        return False
+    try:
+        if len(fio_list) == 3:
+            return User.objects.filter(
+                Q(surname=fio_list[0]) &
+                Q(name=fio_list[1]) &
+                Q(patronymic=fio_list[2])
+            ).exists()
+        else:
+            return User.objects.filter(
+                Q(surname=fio_list[0]) &
+                Q(name=fio_list[1])
+            ).exists()
+    except User.DoesNotExist:
+        return False

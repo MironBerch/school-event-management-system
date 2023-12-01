@@ -57,3 +57,13 @@ def get_user_diplomas(user: User) -> QuerySet[EventDiplomas]:
             user=user,
         ).values_list('event_id', flat=True)
     )
+
+
+def team_with_name_exist_in_event(
+        team_name: str,
+        event: Event,
+) -> bool:
+    return Team.objects.filter(
+        event=event,
+        name=team_name,
+    ).exists()

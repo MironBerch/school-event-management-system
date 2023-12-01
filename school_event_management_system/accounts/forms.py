@@ -79,8 +79,8 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = (
             'email',
-            'name',
             'surname',
+            'name',
             'patronymic',
             'password1',
             'password2',
@@ -206,8 +206,8 @@ class UserInfoForm(forms.ModelForm):
         model = User
         fields = (
             'email',
-            'name',
             'surname',
+            'name',
             'patronymic',
             'role',
         )
