@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import QuerySet
 
 from events.models import Event, EventDiplomas, Participant, Team
 
@@ -15,6 +16,7 @@ class EventAdmin(admin.ModelAdmin):
         'type',
         'date_of_starting_event',
         'published',
+        'archived',
     )
     search_fields = (
         'name',
@@ -24,11 +26,16 @@ class EventAdmin(admin.ModelAdmin):
         'status',
         'type',
         'published',
+        'archived',
     )
     ordering = (
         'status',
         'type',
         'published',
+    )
+    actions = (
+        'set_published',
+        'set_archived',
     )
 
     fieldsets = (
@@ -58,6 +65,7 @@ class EventAdmin(admin.ModelAdmin):
             'Настройки видимости конкурса', {
                 'fields': (
                     'published',
+                    'archived',
                 ),
             },
         ),
@@ -72,6 +80,30 @@ class EventAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    @admin.action(description='Опубликовать мероприятия')
+    def set_published(self, request, queryset: QuerySet):
+        count = queryset.count()
+        queryset.update(published=True)
+        events_word = 'мероприятия'
+        if count == 1:
+            events_word = 'мероприятие'
+        self.message_user(
+            request,
+            f'Опубликовано {count} {events_word}',
+        )
+
+    @admin.action(description='Отправить мероприятия в архив')
+    def set_archived(self, request, queryset: QuerySet):
+        count = queryset.count()
+        queryset.update(archived=True)
+        events_word = 'мероприятия'
+        if count == 1:
+            events_word = 'мероприятие'
+        self.message_user(
+            request,
+            f'В архив отправлено {count} {events_word}',
+        )
 
 
 @admin.register(Participant)

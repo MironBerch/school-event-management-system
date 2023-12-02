@@ -109,6 +109,11 @@ class Event(models.Model):
         blank=True,
         default=False,
     )
+    archived = models.BooleanField(
+        verbose_name=_('находится в архиве'),
+        blank=True,
+        default=False,
+    )
 
     class Meta:
         verbose_name = _('мероприятие')

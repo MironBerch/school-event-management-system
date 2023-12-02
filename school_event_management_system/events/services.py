@@ -10,6 +10,14 @@ def get_published_events() -> QuerySet[Event]:
     return Event.objects.filter(published=True)
 
 
+def get_published_not_archived_events() -> QuerySet[Event]:
+    """Return all published not archived `Event`'s."""
+    return Event.objects.filter(
+        published=True,
+        archived=False,
+    )
+
+
 def get_event_by_slug(slug: int) -> Event:
     """Return `Event` by id."""
     return get_object_or_404(Event, slug=slug)

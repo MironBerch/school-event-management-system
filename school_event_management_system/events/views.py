@@ -10,6 +10,7 @@ from events.services import (
     create_team,
     get_event_by_slug,
     get_published_events,
+    get_published_not_archived_events,
     get_user_diplomas,
     join_event,
     join_team,
@@ -28,7 +29,7 @@ class EventListView(
     def get(self, request: HttpRequest, *args, **kwargs):
         return self.render_to_response(
             context={
-                'events': get_published_events(),
+                'events': get_published_not_archived_events(),
             },
         )
 
