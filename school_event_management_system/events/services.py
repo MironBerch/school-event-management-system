@@ -75,3 +75,12 @@ def team_with_name_exist_in_event(
         event=event,
         name=team_name,
     ).exists()
+
+
+def is_user_participation_of_event(
+        event: Event, user: User
+) -> bool:
+    return Participant.objects.filter(
+        user=user,
+        event=event,
+    ).exists()

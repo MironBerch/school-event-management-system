@@ -9,6 +9,14 @@ def get_event_image_upload_path(instance: 'Event', filename: str) -> str:
     return f'upload/{instance.name}/{filename}'
 
 
+def get_event_regulations_upload_path(instance: 'Event', filename: str) -> str:
+    return f'upload/{instance.name}/{filename}'
+
+
+def get_event_results_upload_path(instance: 'Event', filename: str) -> str:
+    return f'upload/{instance.name}/{filename}'
+
+
 class EventStatusChoices(models.TextChoices):
     REGISTRATION_PENDING = 'Ожидание регистрации', 'Ожидание регистрации'
     REGISTRATION_OPEN = 'Регистрация открыта', 'Регистрация открыта'
@@ -53,6 +61,19 @@ class Event(models.Model):
     description = models.TextField(
         verbose_name=_('описание мероприятия'),
         blank=True,
+    )
+
+    regulations = models.FileField(
+        verbose_name=_('регламент мероприятия'),
+        blank=True,
+        null=True,
+        upload_to=get_event_regulations_upload_path,
+    )
+    results = models.FileField(
+        verbose_name=_('итоги мероприятия'),
+        blank=True,
+        null=True,
+        upload_to=get_event_results_upload_path,
     )
 
     maximum_number_of_team_members = models.IntegerField(

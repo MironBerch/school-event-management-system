@@ -11,7 +11,6 @@ class EventAdmin(admin.ModelAdmin):
     }
     list_display = (
         'name',
-        'slug',
         'status',
         'type',
         'date_of_starting_event',
@@ -47,6 +46,8 @@ class EventAdmin(admin.ModelAdmin):
                     'slug',
                     'image',
                     'description',
+                    'regulations',
+                    'results',
                     'type',
                     'status',
                     'stage',
@@ -123,7 +124,6 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_filter = (
         'event',
         'team',
-        'supervisor',
     )
 
 
@@ -138,10 +138,7 @@ class TeamAdmin(admin.ModelAdmin):
         'event__name',
         'name',
     )
-    list_filter = (
-        'event',
-        'supervisor',
-    )
+    list_filter = ('event', )
 
 
 @admin.register(EventDiplomas)

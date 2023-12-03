@@ -9,36 +9,43 @@
         <h1 class="h1 text-center">{{ event.name }}</h1>
         <div class="d-flex align-items-center py-4 bg-body-tertiary">
             <form class="form w-100 m-auto" action="">
-                <a href="{% url 'register_on_event' slug=event.slug %}">Регистрация</a>
                 {% if event.image %}
                     <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: {{ event.name }}" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <rect width="100%" height="100%" fill="#55595c"/>
                         <image xlink:href="{{ event.image.url }}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" focusable="false" />
                     </svg>
                 {% endif %}
-                <div style="display: flex; justify-content: center;">
-                    <button type="button" class="btn btn-primary w-100 py-2" style="justify-content: center;" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Регистрация
-                    </button>
-                </div>
+                {% if event.status == 'Регистрация открыта' and not is_user_participation_of_event %}
+                    {% if event.date_of_ending_registration %}
+                        Регистрация заканчивается {{ event.date_of_ending_registration }}<br>
+                    {% endif %}
+                    <div style="display: flex; justify-content: center;">
+                        <a href="{% url 'register_on_event' slug=event.slug %}" class="btn btn-primary w-100 py-2" style="justify-content: center;">Регистрация</a>
+                    </div>
+                    <br>
+                {% endif %}
                 <div class="nav-scroller py-1 mb-3 border-bottom">
                     <nav class="nav nav-underline justify-content-between">
-                        <a class="nav-item nav-link" href="{% url 'register_on_event' slug=event.slug %}">О событии</a>
-                        <a class="nav-item nav-link link-body-emphasis" href="#">Анкета</a>
-                        <a class="nav-item nav-link link-body-emphasis" href="#">Задачи</a>
-                        <a class="nav-item nav-link link-body-emphasis" href="#">Обсуждения</a>
+                        <a class="nav-item nav-link" href="">О событии</a>
+                        {% if is_user_participation_of_event %}
+                            <a class="nav-item nav-link link-body-emphasis" href="#">Анкета</a>
+                            <a class="nav-item nav-link link-body-emphasis" href="#">Задачи</a>
+                        {% endif %}
+                        {% if event.regulations %}
+                            <a class="nav-item nav-link link-body-emphasis" href="{{ event.regulations.url }}">Положение</a>
+                        {% endif %}
+                        {% if event.results %}
+                            <a class="nav-item nav-link link-body-emphasis" href="{{ event.results.url }}">Итоги</a>
+                        {% endif %}
                     </nav>
                 </div>
                 {{ event.description }}<br>
-                get_status_display: {{ event.get_status_display }}<br>
-                get_type_display: {{ event.get_type_display }}<br>
-                get_stage_display: {{ event.get_stage_display }}<br>
+                статус: {{ event.get_status_display }}<br>
+                тип: {{ event.get_type_display }}<br>
+                этап: {{ event.get_stage_display }}<br>
 
-                {% if event.date_of_ending_registration %}
-                    {{ event.date_of_ending_registration }}<br>
-                {% endif %}
                 {% if event.date_of_starting_event %}
-                    {{ event.date_of_starting_event }}<br>
+                    Дата начала мероприятия: {{ event.date_of_starting_event }}<br>
                 {% endif %}
                 {% if event.type != 'Индивидуальное' %}
                     Размер команды: от {{ event.minimum_number_of_team_members }} до {{ event.maximum_number_of_team_members }}<br>

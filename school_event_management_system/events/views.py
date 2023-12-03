@@ -12,6 +12,7 @@ from events.services import (
     get_published_events,
     get_published_not_archived_events,
     get_user_diplomas,
+    is_user_participation_of_event,
     join_event,
     join_team,
 )
@@ -80,9 +81,14 @@ class RegisterOnEventView(
     supervisor_form: SupervisorForm = None
     participant_form: ParticipantForm = None
     team_participants_form: TeamParticipantsForm = None
+    is_user_participation_of_event: bool = False
 
     def dispatch(self, request: HttpRequest, slug, *args, **kwargs):
         event = get_event_by_slug(slug=slug)
+        self.is_user_participation_of_event = is_user_participation_of_event(
+            event=event,
+            user=request.user,
+        )
         self.team_participants_form = TeamParticipantsForm(
             data=request.POST or None,
             minimum_number_of_team_members=event.minimum_number_of_team_members,
@@ -106,6 +112,7 @@ class RegisterOnEventView(
         return self.render_to_response(
             context={
                 'event': event,
+                'is_user_participation_of_event': self.is_user_participation_of_event,
                 'supervisor_form': self.supervisor_form,
                 'participant_form': self.participant_form,
                 'team_form': self.team_form,
@@ -156,6 +163,7 @@ class RegisterOnEventView(
         return self.render_to_response(
             context={
                 'event': event,
+                'is_user_participation_of_event': self.is_user_participation_of_event,
                 'supervisor_form': self.supervisor_form,
                 'participant_form': self.participant_form,
                 'team_form': self.team_form,
