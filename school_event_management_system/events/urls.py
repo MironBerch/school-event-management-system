@@ -3,6 +3,7 @@ from django.urls import path
 
 from events.views import (
     DiplomasListView,
+    EditParticipantEventView,
     EventArchiveView,
     EventDetailView,
     EventListView,
@@ -31,6 +32,13 @@ urlpatterns = [
             RegisterOnEventView.as_view(),
         ),
         name='register_on_event',
+    ),
+    path(
+        route='event/<slug:slug>/edit/',
+        view=login_required(
+            EditParticipantEventView.as_view(),
+        ),
+        name='edit_participant_event',
     ),
 
     # diplomas

@@ -84,3 +84,16 @@ def is_user_participation_of_event(
         user=user,
         event=event,
     ).exists()
+
+
+def get_event_participant(
+        event: Event,
+        user: User,
+) -> Participant:
+    try:
+        return Participant.objects.get(
+            event=event,
+            user=user,
+        )
+    except Participant.DoesNotExist:
+        return None

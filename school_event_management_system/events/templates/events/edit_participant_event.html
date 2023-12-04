@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
+{% load django_bootstrap5 %}
+
 {% block title %}
-    {{ event.name }} &bull;
+    Анкета {{ event.name }} &bull;
 {% endblock %}
 
 {% block content %}
@@ -26,9 +28,9 @@
                 {% endif %}
                 <div class="nav-scroller py-1 mb-3 border-bottom">
                     <nav class="nav nav-underline justify-content-between">
-                        <a class="nav-item nav-link" href="#">О событии</a>
+                        <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
                         {% if is_user_participation_of_event %}
-                            <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
+                            <a class="nav-item nav-link" href="#">Анкета</a>
                             <a class="nav-item nav-link link-body-emphasis" href="#">Задачи</a>
                         {% endif %}
                         {% if event.regulations %}
@@ -39,18 +41,21 @@
                         {% endif %}
                     </nav>
                 </div>
-                {{ event.description }}<br>
-                статус: {{ event.get_status_display }}<br>
-                тип: {{ event.get_type_display }}<br>
-                этап: {{ event.get_stage_display }}<br>
-
-                {% if event.date_of_starting_event %}
-                    Дата начала мероприятия: {{ event.date_of_starting_event }}<br>
-                {% endif %}
-                {% if event.type != 'Индивидуальное' %}
-                    Размер команды: от {{ event.minimum_number_of_team_members }} до {{ event.maximum_number_of_team_members }}<br>
-                {% endif %}
+                <div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% if event.type == 'Индивидуальное' %}
+                            {% bootstrap_form participant_form %}
+                        {% else %}
+                            {% bootstrap_form team_form %}
+                            {% bootstrap_form team_participants_form %}
+                        {% endif %}
+                        {% bootstrap_form supervisor_form %}
+                        <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Изменить анкету</button>
+                    </form>
+                </div>
             </form>
         </div>
     </div>
+
 {% endblock %}
