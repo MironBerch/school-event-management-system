@@ -8,7 +8,7 @@
     <div class="">
         <h1 class="h1 text-center">{{ event.name }}</h1>
         <div class="d-flex align-items-center py-4 bg-body-tertiary">
-            <form class="form w-100 m-auto" action="">
+            <div class="form w-100 m-auto">
                 {% if event.image %}
                     <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: {{ event.name }}" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <rect width="100%" height="100%" fill="#55595c"/>
@@ -29,7 +29,7 @@
                         <a class="nav-item nav-link" href="#">О событии</a>
                         {% if is_user_participation_of_event %}
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
-                            <a class="nav-item nav-link link-body-emphasis" href="#">Задачи</a>
+                            <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Решение</a>
                         {% endif %}
                         {% if event.regulations %}
                             <a class="nav-item nav-link link-body-emphasis" href="{{ event.regulations.url }}">Положение</a>
@@ -50,7 +50,7 @@
                 {% if event.type != 'Индивидуальное' %}
                     Размер команды: от {{ event.minimum_number_of_team_members }} до {{ event.maximum_number_of_team_members }}<br>
                 {% endif %}
-            </form>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -223,3 +223,36 @@ class EventDiplomas(models.Model):
 
     def __str__(self):
         return f'{self.event}'
+
+
+class Solution(models.Model):
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_('мероприятие'),
+        on_delete=models.CASCADE,
+    )
+    participant = models.ForeignKey(
+        Participant,
+        verbose_name=_('участник'),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    team = models.ForeignKey(
+        Team,
+        verbose_name=_('команда'),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    url = models.URLField(
+        verbose_name=_('ссылка на файлы'),
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = _('Ссылка на файлы')
+        verbose_name_plural = _('Ссылки на файлы')
+
+    def __str__(self):
+        return f'{self.event} - {self.url}'

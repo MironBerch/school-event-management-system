@@ -7,6 +7,7 @@ from events.views import (
     EventArchiveView,
     EventDetailView,
     EventListView,
+    EventSolutionView,
     RegisterOnEventView,
 )
 
@@ -39,6 +40,13 @@ urlpatterns = [
             EditParticipantEventView.as_view(),
         ),
         name='edit_participant_event',
+    ),
+    path(
+        route='event/<slug:slug>/solution/',
+        view=login_required(
+            EventSolutionView.as_view(),
+        ),
+        name='event_solution',
     ),
 
     # diplomas

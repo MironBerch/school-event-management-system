@@ -1,6 +1,7 @@
 from django import forms
 
 from accounts.services import is_user_with_fio_exist
+from events.models import Solution
 from events.services import team_with_name_exist_in_event
 
 
@@ -112,3 +113,9 @@ class ClassTeamParticipantsForm(forms.Form):
                 if not is_user_with_fio_exist(fio):
                     self.add_error(field_name, 'Нет пользователя с таким ФИО')
         return cleaned_data
+
+
+class SolutionForm(forms.ModelForm):
+    class Meta:
+        model = Solution
+        fields = ('url', )

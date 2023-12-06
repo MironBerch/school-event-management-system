@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 
-from events.models import Event, EventDiplomas, Participant, Team
+from events.models import Event, EventDiplomas, Participant, Solution, Team
 
 
 @admin.register(Event)
@@ -143,5 +143,24 @@ class TeamAdmin(admin.ModelAdmin):
 
 @admin.register(EventDiplomas)
 class EventDiplomasAdmin(admin.ModelAdmin):
-    list_display = ('event', )
+    list_display = (
+        'event',
+        'url',
+    )
     search_fields = ('event__name', )
+
+
+@admin.register(Solution)
+class SolutionAdmin(admin.ModelAdmin):
+    list_display = (
+        'event',
+        'participant',
+        'team',
+        'url',
+    )
+    search_fields = (
+        'event__name',
+        'participant',
+        'team',
+    )
+    list_filter = ('event', )

@@ -2,7 +2,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from accounts.models import User
-from events.models import Event, EventDiplomas, Participant, Team
+from events.models import Event, EventDiplomas, Participant, Solution, Team
 
 
 def get_published_events() -> QuerySet[Event]:
@@ -96,4 +96,30 @@ def get_event_participant(
             user=user,
         )
     except Participant.DoesNotExist:
+        return None
+
+
+def get_team_solution(
+        event: Event,
+        team: Team,
+) -> Solution:
+    try:
+        return Solution.objects.get(
+            event=event,
+            team=team,
+        )
+    except Solution.DoesNotExist:
+        return None
+
+
+def get_participant_solution(
+        event: Event,
+        participant: Participant,
+) -> Solution:
+    try:
+        return Solution.objects.get(
+            event=event,
+            participant=participant,
+        )
+    except Solution.DoesNotExist:
         return None
