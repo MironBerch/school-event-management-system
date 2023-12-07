@@ -160,6 +160,11 @@ class Team(models.Model):
         verbose_name=_('название команды'),
         max_length=100,
     )
+    school_class = models.CharField(
+        verbose_name=_('класс который представляет команда'),
+        max_length=5,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _('команда')

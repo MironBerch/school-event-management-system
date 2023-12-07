@@ -132,10 +132,12 @@ class TeamAdmin(admin.ModelAdmin):
     list_display = (
         'event',
         'name',
+        'school_class',
         'supervisor',
     )
     search_fields = (
         'event__name',
+        'school_class',
         'name',
     )
     list_filter = ('event', )

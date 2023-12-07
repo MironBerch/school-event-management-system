@@ -27,11 +27,13 @@ def create_team(
         name: str,
         event: Event,
         supervisor: User,
+        school_class: str = '',
 ) -> Team:
     return Team.objects.create(
         name=name,
         event=event,
         supervisor=supervisor,
+        school_class=school_class,
     )
 
 
@@ -39,7 +41,7 @@ def join_team(
         user: User,
         team: Team,
         event: Event,
-) -> None:
+) -> Participant:
     return Participant.objects.create(
         team=team,
         event=event,
@@ -123,3 +125,69 @@ def get_participant_solution(
         )
     except Solution.DoesNotExist:
         return None
+
+
+def change_participant_supervisor(
+        participant: Participant,
+        supervisor: User,
+) -> Participant:
+    participant.supervisor = supervisor
+    participant.save()
+    return participant
+
+
+def change_team_supervisor(
+        team: Team,
+        supervisor: User,
+) -> Team:
+    team.supervisor = supervisor
+    team.save()
+    return team
+
+
+def create_initial_data_for_team_participants_form(
+        team: Team,
+) -> dict[str, str]:
+    participants = team.participants.all()
+    initial_data = {}
+    for i, participant in enumerate(participants, start=1):
+        participant_key = f'participant_{i}'
+        participant_value = f'{participant.user.full_name}'
+        initial_data[participant_key] = participant_value
+    return initial_data
+
+
+def change_team_name(
+        team: Team,
+        name: str,
+) -> Team:
+    team.name = name
+    team.save()
+    return team
+
+
+def get_or_join_team(
+        user: User,
+        team: Team,
+        event: Event,
+) -> Participant:
+    participant, _ = Participant.objects.get_or_create(
+        team=team,
+        event=event,
+        user=user,
+    )
+    return participant
+
+
+def change_team_school_class(
+        team: Team,
+        school_class: str,
+) -> Team:
+    team.school_class = school_class
+    team.save()
+    return team
+
+
+def disband_team_participants(team: Team) -> None:
+    for participant in team.participants.all():
+        participant.delete()
