@@ -38,6 +38,7 @@ from accounts.services import (
     get_user_from_uid,
     send_verification_link,
     update_user_email_confirmation_status,
+    update_user_profile_year_of_study,
 )
 from accounts.tokens import account_activation_token
 
@@ -215,6 +216,7 @@ class PersonalInfoEditView(
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         self.profile_form = ProfileForm(
+            user_role=request.user.role,
             data=request.POST or None,
             instance=request.user.profile,
         )
@@ -250,6 +252,12 @@ class PersonalInfoEditView(
                     request.scheme,
                     request.user,
                 )
+
+            if (
+                'role' in self.user_info_form.changed_data and
+                self.user_info_form.cleaned_data['role'] != 'ученик'
+            ):
+                update_user_profile_year_of_study(profile=request.user.profile)
 
             if self.profile_form.changed_data or self.user_info_form.changed_data:
                 messages.add_message(

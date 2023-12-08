@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'django_bootstrap5',
     'bootstrap_datepicker_plus',
+    'ckeditor',
 
     # local
     'accounts.apps.AccountsConfig',
@@ -159,3 +160,7 @@ CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
 
 hostname, _, ips = gethostbyname_ex(gethostname())
 INTERNAL_IPS = [ip[: ip.rfind('.')] + '.1' for ip in ips] + ['127.0.0.1', '10.0.2.2']
+
+# Ckeditor configuration
+
+CKEDITOR_UPLOAD_PATH = 'content/ckeditor/'

@@ -6,7 +6,16 @@
         </ul>
         <div class="col-md-3 text-end">
             {% if request.user.is_authenticated %}
-                <a href="{% url 'settings_dashboard' %}"><button type="button" class="btn btn-outline-primary me-2">{{ request.user.full_name }}</button></a>
+                <div class="dropdown">
+                    <a class="btn btn-outline-primary me-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="position: relative;">
+                        {{ request.user }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'settings_dashboard' %}">Настройки</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'signout' %}">Выйти</a></li>
+                    </ul>
+                </div>
             {% else %}
                 <a href="{% url 'signin' %}"><button type="button" class="btn btn-outline-primary me-2">Вход</button></a>
                 <a href="{% url 'signup' %}"><button type="button" class="btn btn-primary">Регистрация</button></a>

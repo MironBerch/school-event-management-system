@@ -242,6 +242,7 @@ class ProfileForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user_role = kwargs.pop('user_role', None)
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.fields['date_of_birth'].label = 'Дата рождения'
         self.fields['school'].label = 'Школа'
@@ -252,6 +253,10 @@ class ProfileForm(forms.ModelForm):
         if self.instance and self.instance.from_current_school:
             self.fields['school'].widget = forms.HiddenInput()
             self.fields['school'].required = False
+
+        if user_role and user_role != 'ученик':
+            self.fields['year_of_study'].required = False
+            self.fields['year_of_study'].widget = forms.HiddenInput()
 
     def clean(self):
         cleaned_data = super().clean()

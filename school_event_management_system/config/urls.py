@@ -13,6 +13,8 @@ urlpatterns = [
     path('', include('events.urls')),
 
     path('', RedirectView.as_view(url='/events/', permanent=True)),
+
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:

@@ -7,7 +7,7 @@ from django.template.loader import get_template, render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from accounts.models import User, UserManager
+from accounts.models import Profile, User, UserManager
 from accounts.tasks import send_email_verification_code
 from accounts.tokens import account_activation_token
 from common.services import is_cooldown_ended, set_key_with_timeout
@@ -145,3 +145,8 @@ def is_user_with_fio_exist(fio: str) -> bool:
             ).exists()
     except User.DoesNotExist:
         return False
+
+
+def update_user_profile_year_of_study(profile: Profile) -> None:
+    profile.year_of_study = None
+    profile.save()

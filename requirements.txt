@@ -35,15 +35,21 @@ django==4.2.7
     #   -r requirements.in
     #   django-bootstrap-datepicker-plus
     #   django-bootstrap5
+    #   django-ckeditor
     #   django-debug-toolbar
+    #   django-js-asset
     #   django-model-utils
     #   django-phonenumber-field
 django-bootstrap-datepicker-plus==5.0.4
     # via -r requirements.in
 django-bootstrap5==23.3
     # via -r requirements.in
+django-ckeditor==6.7.0
+    # via -r requirements.in
 django-debug-toolbar==4.2.0
     # via -r requirements.in
+django-js-asset==2.1.0
+    # via django-ckeditor
 django-model-utils==4.3.1
     # via -r requirements.in
 django-phonenumber-field==7.2.0
