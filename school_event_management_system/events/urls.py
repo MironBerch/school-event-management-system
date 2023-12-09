@@ -7,6 +7,7 @@ from events.views import (
     EventArchiveView,
     EventDetailView,
     EventListView,
+    EventQRCodeView,
     EventSolutionView,
     RegisterOnEventView,
 )
@@ -26,6 +27,11 @@ urlpatterns = [
         route='event/<slug:slug>/',
         view=EventDetailView.as_view(),
         name='event_detail',
+    ),
+    path(
+        route='event/<slug:slug>/qr_code/',
+        view=EventQRCodeView.as_view(),
+        name='event_qr_code',
     ),
     path(
         route='event/<slug:slug>/register/',

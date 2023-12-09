@@ -37,6 +37,7 @@
                         {% if event.results %}
                             <a class="nav-item nav-link link-body-emphasis" href="{{ event.results.url }}">Итоги</a>
                         {% endif %}
+                        <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_qr_code' slug=event.slug %}">QR-код</a>
                     </nav>
                 </div>
                 {{ event.description }}<br>

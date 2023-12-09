@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
-{% load django_bootstrap5 %}
-
 {% block title %}
-    Анкета {{ event.name }} &bull;
+    {{ event.name }} &bull;
 {% endblock %}
 
 {% block content %}
@@ -11,11 +9,20 @@
         <h1 class="h1 text-center">{{ event.name }}</h1>
         <div class="d-flex align-items-center py-4 bg-body-tertiary">
             <div class="form w-100 m-auto">
+                {% if event.status == 'Регистрация открыта' and not is_user_participation_of_event %}
+                    {% if event.date_of_ending_registration %}
+                        Регистрация заканчивается {{ event.date_of_ending_registration }}<br>
+                    {% endif %}
+                    <div style="display: flex; justify-content: center;">
+                        <a href="{% url 'register_on_event' slug=event.slug %}" class="btn btn-primary w-100 py-2" style="justify-content: center;">Регистрация</a>
+                    </div>
+                    <br>
+                {% endif %}
                 <div class="nav-scroller py-1 mb-3 border-bottom">
                     <nav class="nav nav-underline justify-content-between">
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
                         {% if is_user_participation_of_event %}
-                            <a class="nav-item nav-link" href="#">Анкета</a>
+                            <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Решение</a>
                         {% endif %}
                         {% if event.regulations %}
@@ -24,22 +31,10 @@
                         {% if event.results %}
                             <a class="nav-item nav-link link-body-emphasis" href="{{ event.results.url }}">Итоги</a>
                         {% endif %}
-                        <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_qr_code' slug=event.slug %}">QR-код</a>
+                        <a class="nav-item nav-link" href="#">QR-код</a>
                     </nav>
                 </div>
-                <div>
-                    <form method="POST" action="">
-                        {% csrf_token %}
-                        {% if event.type == 'Индивидуальное' %}
-                            {% bootstrap_form participant_form %}
-                        {% else %}
-                            {% bootstrap_form team_form %}
-                            {% bootstrap_form team_participants_form %}
-                        {% endif %}
-                        {% bootstrap_form supervisor_form %}
-                        <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Изменить анкету</button>
-                    </form>
-                </div>
+                <img src="data:image/png;base64,{{ qr_code }}" class="img-fluid" alt="...">
             </div>
         </div>
     </div>

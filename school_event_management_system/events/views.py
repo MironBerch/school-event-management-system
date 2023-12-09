@@ -1,6 +1,12 @@
+import base64
+from io import BytesIO
+
+import qrcode
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
 
@@ -85,7 +91,42 @@ class EventDetailView(
                 'is_user_participation_of_event': is_user_participation_of_event(
                     event=event,
                     user=request.user,
-                )
+                ),
+            },
+        )
+
+
+class EventQRCodeView(
+    LoginRequiredMixin,
+    TemplateResponseMixin,
+    View,
+):
+    """Detail event QR code view."""
+
+    template_name = 'events/event_qr_code.html'
+
+    def get(self, request, slug):
+        event = get_event_by_slug(slug=slug)
+        qr = qrcode.QRCode(
+            version=2,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=31,
+            border=1,
+        )
+        qr.add_data(reverse('event_detail', kwargs={'slug': event.slug}))
+        qr.make(fit=True)
+        qr_code = qr.make_image(fill_color='black', back_color='white')
+        buffered = BytesIO()
+        qr_code.save(buffered, format='PNG')
+        qr_code = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        return self.render_to_response(
+            context={
+                'event': event,
+                'is_user_participation_of_event': is_user_participation_of_event(
+                    event=event,
+                    user=request.user,
+                ),
+                'qr_code': qr_code,
             },
         )
 

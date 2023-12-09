@@ -15,7 +15,7 @@ class TeamForm(forms.Form):
         label='Класс который представляет команда*',
     )
 
-    def __init__(self, team, event, event_for_classes: bool = False, *args, **kwargs):
+    def __init__(self, team=None, event=None, event_for_classes: bool = False, *args, **kwargs):
         self.event = event
         self.team = team
         super(TeamForm, self).__init__(*args, **kwargs)
