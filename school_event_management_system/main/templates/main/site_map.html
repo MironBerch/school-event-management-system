@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Карта сайта &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="">
+        <h1 class="h1 text-center">Карта сайта</h1>
+        <div class="d-flex align-items-center py-4 bg-body-tertiary">
+            <div class="form w-100 m-auto">
+                <ul class="list-group">
+                    <li><a href="{% url 'events_list' %}">Список активных мероприятий</a></li>
+                    <li><a href="{% url 'events_archive' %}">Полный список мероприятий</a></li>
+                    <li><a href="{% url 'diplomas_list' %}">Дипломы</a></li>
+                </ul>                
+            </div>
+        </div>
+    </div>
+{% endblock %}

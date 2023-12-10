@@ -57,6 +57,7 @@ TEMPLATES = [
             BASE_DIR / 'templates',
             BASE_DIR / 'accounts/templates',
             BASE_DIR / 'events/templates',
+            BASE_DIR / 'main/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
