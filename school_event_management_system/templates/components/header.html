@@ -1,8 +1,17 @@
 <div class="container">
     <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="{% url 'events_list' %}" class="nav-link px-2 link-secondary">На главную</a></li>
-            <li><a href="{% url 'diplomas_list' %}" class="nav-link px-2">Мои дипломы</a></li>
+            {% if request.user.is_authenticated  %}
+                <li><a href="{% url 'events_list' %}" class="nav-link px-2 link-secondary">На главную</a></li>
+                <li><a href="{% url 'diplomas_list' %}" class="nav-link px-2">Мои дипломы</a></li>
+                {% if request.user.role == 'ученик' %}
+                    <li><a href="{% url 'participant_events' %}" class="nav-link px-2">Мои мероприятия</a></li>
+                {% else %}
+                    <li><a href="{% url 'supervisor_events' %}" class="nav-link px-2">Мои мероприятия</a></li>
+                {% endif %}
+            {% else %}
+                <li><a href="#" class="nav-link px-2 link-secondary">{{ school }}</a></li>
+            {% endif %}
         </ul>
         <div class="col-md-3 text-end">
             {% if request.user.is_authenticated %}

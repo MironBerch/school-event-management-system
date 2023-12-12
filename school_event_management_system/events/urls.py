@@ -9,7 +9,9 @@ from events.views import (
     EventListView,
     EventQRCodeView,
     EventSolutionView,
+    ParticipantEventsView,
     RegisterOnEventView,
+    SupervisorEventsView,
 )
 
 urlpatterns = [
@@ -17,6 +19,16 @@ urlpatterns = [
         route='events/',
         view=EventListView.as_view(),
         name='events_list',
+    ),
+    path(
+        route='events/participant/',
+        view=ParticipantEventsView.as_view(),
+        name='participant_events',
+    ),
+    path(
+        route='events/supervisor/',
+        view=SupervisorEventsView.as_view(),
+        name='supervisor_events',
     ),
     path(
         route='events/archive/',

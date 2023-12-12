@@ -29,6 +29,8 @@ from events.services import (
     disband_team_participants,
     get_event_by_slug,
     get_event_participant,
+    get_events_where_user_are_participant,
+    get_events_where_user_are_supervisor,
     get_participant_solution,
     get_published_events,
     get_published_not_archived_events,
@@ -529,5 +531,39 @@ class EventSolutionView(
                 'participant': self.participant,
                 'is_user_participation_of_event': self.is_user_participation_of_event,
                 'solution_form': self.solution_form,
+            }
+        )
+
+
+class ParticipantEventsView(
+    LoginRequiredMixin,
+    TemplateResponseMixin,
+    View,
+):
+    """View for display all events where user are participant."""
+
+    template_name = 'events/participant_events.html'
+
+    def get(self, request: HttpRequest):
+        return self.render_to_response(
+            context={
+                'events': get_events_where_user_are_participant(user=request.user),
+            }
+        )
+
+
+class SupervisorEventsView(
+    LoginRequiredMixin,
+    TemplateResponseMixin,
+    View,
+):
+    """View for display all events where user are supervisor."""
+
+    template_name = 'events/supervisor_events.html'
+
+    def get(self, request: HttpRequest):
+        return self.render_to_response(
+            context={
+                'events': get_events_where_user_are_supervisor(user=request.user),
             }
         )

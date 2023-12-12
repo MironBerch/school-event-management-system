@@ -191,3 +191,19 @@ def change_team_school_class(
 def disband_team_participants(team: Team) -> None:
     for participant in team.participants.all():
         participant.delete()
+
+
+def get_events_where_user_are_participant(
+        user: User,
+) -> QuerySet[Event]:
+    return Event.objects.filter(
+        participants__user=user
+    )
+
+
+def get_events_where_user_are_supervisor(
+        user: User,
+) -> QuerySet[Event]:
+    return Event.objects.filter(
+        participants__supervisor=user
+    )
