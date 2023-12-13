@@ -66,6 +66,12 @@ class Event(models.Model):
         null=True,
     )
 
+    need_presentation = models.BooleanField(
+        verbose_name=_('нужна презентация'),
+        blank=True,
+        default=False,
+    )
+
     regulations = models.FileField(
         verbose_name=_('регламент мероприятия'),
         blank=True,
@@ -264,3 +270,23 @@ class Solution(models.Model):
 
     def __str__(self):
         return f'{self.event} - {self.url}'
+
+
+class Task(models.Model):
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_('мероприятие'),
+        on_delete=models.CASCADE,
+    )
+    description = RichTextField(
+        verbose_name=_('описание мероприятия'),
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = _('Задание мероприятия')
+        verbose_name_plural = _('Задания мероприятий')
+
+    def __str__(self):
+        return f'{self.event}'

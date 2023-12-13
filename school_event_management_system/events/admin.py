@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 
-from events.models import Event, EventDiplomas, Participant, Solution, Team
+from events.models import Event, EventDiplomas, Participant, Solution, Task, Team
 
 
 @admin.register(Event)
@@ -46,6 +46,7 @@ class EventAdmin(admin.ModelAdmin):
                     'slug',
                     'image',
                     'description',
+                    'need_presentation',
                     'regulations',
                     'results',
                     'type',
@@ -166,3 +167,9 @@ class SolutionAdmin(admin.ModelAdmin):
         'team',
     )
     list_filter = ('event', )
+
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ('event', )
+    search_fields = ('event__name', )
