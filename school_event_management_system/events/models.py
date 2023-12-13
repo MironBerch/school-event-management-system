@@ -278,8 +278,8 @@ class Task(models.Model):
         verbose_name=_('мероприятие'),
         on_delete=models.CASCADE,
     )
-    description = RichTextField(
-        verbose_name=_('описание мероприятия'),
+    task = RichTextField(
+        verbose_name=_('задание мероприятия'),
         blank=True,
         null=True,
     )

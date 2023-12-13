@@ -23,7 +23,11 @@
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
                         {% if is_user_participation_of_event %}
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
-                            <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Решение</a>
+                            {% if event.task_set.exists %}
+                                <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Задачи и решение</a>
+                            {% elif not event.task_set.exists and event.need_presentation %}
+                                <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Файлы для выступления</a>
+                            {% endif %}
                         {% endif %}
                         {% if event.regulations %}
                             <a class="nav-item nav-link link-body-emphasis" href="{{ event.regulations.url }}">Положение</a>

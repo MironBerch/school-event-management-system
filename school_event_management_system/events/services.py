@@ -2,7 +2,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from accounts.models import User
-from events.models import Event, EventDiplomas, Participant, Solution, Team
+from events.models import Event, EventDiplomas, Participant, Solution, Task, Team
 
 
 def get_published_events() -> QuerySet[Event]:
@@ -207,3 +207,10 @@ def get_events_where_user_are_supervisor(
     return Event.objects.filter(
         participants__supervisor=user
     )
+
+
+def get_event_task(event: Event) -> Task:
+    try:
+        return Task.objects.get(event=event)
+    except Task.DoesNotExist:
+        return None

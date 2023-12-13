@@ -29,6 +29,7 @@ from events.services import (
     disband_team_participants,
     get_event_by_slug,
     get_event_participant,
+    get_event_task,
     get_events_where_user_are_participant,
     get_events_where_user_are_supervisor,
     get_participant_solution,
@@ -509,6 +510,7 @@ class EventSolutionView(
     def get(self, request: HttpRequest, slug):
         return self.render_to_response(
             context={
+                'task': get_event_task(event=self.event),
                 'event': self.event,
                 'participant': self.participant,
                 'is_user_participation_of_event': self.is_user_participation_of_event,
@@ -527,6 +529,7 @@ class EventSolutionView(
             solution.save()
         return self.render_to_response(
             context={
+                'task': get_event_task(event=self.event),
                 'event': self.event,
                 'participant': self.participant,
                 'is_user_participation_of_event': self.is_user_participation_of_event,

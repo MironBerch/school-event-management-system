@@ -29,7 +29,11 @@
                         <a class="nav-item nav-link" href="#">О событии</a>
                         {% if is_user_participation_of_event %}
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
-                            <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Решение</a>
+                            {% if event.task_set.exists %}
+                                <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Задачи и решение</a>
+                            {% elif not event.task_set.exists and event.need_presentation %}
+                                <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Файлы для выступления</a>
+                            {% endif %}
                         {% endif %}
                         {% if event.regulations %}
                             <a class="nav-item nav-link link-body-emphasis" href="{{ event.regulations.url }}">Положение</a>
@@ -40,7 +44,9 @@
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_qr_code' slug=event.slug %}">QR-код</a>
                     </nav>
                 </div>
-                {{ event.description }}<br>
+                <div id="ckeditor-display">
+                    {{ event.description|safe }}
+                </div>
                 статус: {{ event.get_status_display }}<br>
                 тип: {{ event.get_type_display }}<br>
                 этап: {{ event.get_stage_display }}<br>
