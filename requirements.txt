@@ -83,6 +83,8 @@ pillow==10.1.0
     # via -r requirements.in
 prompt-toolkit==3.0.41
     # via click-repl
+psycopg2-binary==2.9.9
+    # via -r requirements.in
 pycodestyle==2.11.1
     # via flake8
 pydantic==2.5.1
