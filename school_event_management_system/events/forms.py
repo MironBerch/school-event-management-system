@@ -25,13 +25,19 @@ class TeamForm(forms.Form):
 
     def clean_name(self):
         team_name = str(self.cleaned_data['name'])
-        if (team_name != self.team.name) and team_with_name_exist_in_event(
-            event=self.event,
-            team_name=team_name,
-        ):
-            raise forms.ValidationError(
-                'Команда с таким названием уже участвует мероприятии',
-            )
+        if self.team and self.team.name:
+            if team_name != self.team.name and team_with_name_exist_in_event(
+                event=self.event,
+                team_name=team_name,
+            ):
+                raise forms.ValidationError(
+                    'Команда с таким названием уже участвует в мероприятии',
+                )
+        else:
+            if team_with_name_exist_in_event(event=self.event, team_name=team_name):
+                raise forms.ValidationError(
+                    'Команда с таким названием уже участвует в мероприятии',
+                )
         return team_name
 
 

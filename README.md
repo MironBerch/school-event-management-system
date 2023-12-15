@@ -10,6 +10,11 @@ SCHOOL_NAME=
 SECRET_KEY=
 DEBUG=
 
+# Database
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+
 # Celery
 CELERY_BROKER_URL=<redis://redis:6379>
 

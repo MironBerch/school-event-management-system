@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
 
 from accounts.models import User
@@ -201,12 +201,10 @@ def get_events_where_user_are_participant(
     )
 
 
-def get_events_where_user_are_supervisor(
-        user: User,
-) -> QuerySet[Event]:
+def get_events_where_user_are_supervisor(user: User) -> QuerySet[Event]:
     return Event.objects.filter(
-        participants__supervisor=user
-    )
+        Q(participants__supervisor=user) | Q(teams__supervisor=user),
+    ).distinct()
 
 
 def get_event_task(event: Event) -> Task:
@@ -214,3 +212,25 @@ def get_event_task(event: Event) -> Task:
         return Task.objects.get(event=event)
     except Task.DoesNotExist:
         return None
+
+
+def get_teams_with_supervisor(
+        event: Event,
+        supervisor: User,
+) -> QuerySet[Team]:
+    teams = Team.objects.filter(
+        event=event,
+        supervisor=supervisor,
+    )
+    return teams
+
+
+def get_participants_with_supervisor(
+        event: Event,
+        supervisor: User,
+) -> QuerySet[Participant]:
+    participants = Participant.objects.filter(
+        event=event,
+        supervisor=supervisor,
+    )
+    return participants

@@ -3,6 +3,7 @@ from io import BytesIO
 
 import qrcode
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import redirect
@@ -33,9 +34,11 @@ from events.services import (
     get_events_where_user_are_participant,
     get_events_where_user_are_supervisor,
     get_participant_solution,
+    get_participants_with_supervisor,
     get_published_events,
     get_published_not_archived_events,
     get_team_solution,
+    get_teams_with_supervisor,
     get_user_diplomas,
     is_user_participation_of_event,
     join_event,
@@ -88,6 +91,14 @@ class EventDetailView(
 
     def get(self, request, slug):
         event = get_event_by_slug(slug=slug)
+        teams = get_teams_with_supervisor(
+            event=event,
+            supervisor=request.user,
+        )
+        participants = get_participants_with_supervisor(
+            event=event,
+            supervisor=request.user,
+        )
         return self.render_to_response(
             context={
                 'event': event,
@@ -95,6 +106,8 @@ class EventDetailView(
                     event=event,
                     user=request.user,
                 ),
+                'teams': teams,
+                'participants': participants,
             },
         )
 
@@ -204,6 +217,11 @@ class RegisterOnEventView(
                     ),
                     event=self.event,
                 )
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    'Участник успешно зарегистрирован на мероприятии',
+                )
                 return redirect('edit_participant_event', slug=self.event.slug)
         elif self.event.type == 'Командное':
             if (
@@ -231,6 +249,11 @@ class RegisterOnEventView(
                             )
                         else:
                             pass
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    f'Комманда \'{team.name}\' успешно зарегистрирована на мероприятии',
+                )
                 return redirect('edit_participant_event', slug=self.event.slug)
         else:
             if (
@@ -259,6 +282,11 @@ class RegisterOnEventView(
                             )
                         else:
                             pass
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    f'Комманда \'{team.name}\' успешно зарегистрирована на мероприятии',
+                )
                 return redirect('edit_participant_event', slug=self.event.slug)
 
         return self.render_to_response(
