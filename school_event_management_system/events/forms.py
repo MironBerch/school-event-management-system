@@ -103,3 +103,16 @@ class SolutionForm(forms.ModelForm):
     class Meta:
         model = Solution
         fields = ('url', )
+
+
+class SelectTeamOrParticipantForm(forms.Form):
+    selection = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, participants=None, teams=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if teams is not None:
+            choices = [(object.id, str(object.name)) for object in teams]
+            self.fields['selection'].choices = choices
+        if participants is not None:
+            choices = [(object.id, str(object.user.full_name)) for object in teams]
+            self.fields['selection'].choices = choices

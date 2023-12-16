@@ -5,21 +5,23 @@ import qrcode
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
 
-from accounts.services import get_user_by_fio
+from accounts.services import get_user_by_fio, get_user_by_id
 from events.forms import (
     ParticipantForm,
+    SelectTeamOrParticipantForm,
     SolutionForm,
     SupervisorForm,
     TeamForm,
     TeamParticipantsForm,
 )
-from events.models import Event, Participant, Solution
+from events.models import Event, Participant, Solution, Team
 from events.services import (
     change_participant_supervisor,
     change_team_name,
@@ -37,6 +39,7 @@ from events.services import (
     get_participants_with_supervisor,
     get_published_events,
     get_published_not_archived_events,
+    get_team_by_id,
     get_team_solution,
     get_teams_with_supervisor,
     get_user_diplomas,
@@ -123,6 +126,14 @@ class EventQRCodeView(
 
     def get(self, request, slug):
         event = get_event_by_slug(slug=slug)
+        teams = get_teams_with_supervisor(
+            event=event,
+            supervisor=request.user,
+        )
+        participants = get_participants_with_supervisor(
+            event=event,
+            supervisor=request.user,
+        )
         qr = qrcode.QRCode(
             version=2,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -143,6 +154,8 @@ class EventQRCodeView(
                     user=request.user,
                 ),
                 'qr_code': qr_code,
+                'teams': teams,
+                'participants': participants,
             },
         )
 
@@ -324,7 +337,7 @@ class EditParticipantEventView(
             event=self.event,
             user=request.user,
         )
-        if not self.is_user_participation_of_event:
+        if not self.is_user_participation_of_event and request.user.role == 'ученик':
             return redirect('register_on_event', slug=self.event.slug)
         if self.event.type != 'Индивидуальное':
             self.team_form = TeamForm(
@@ -509,44 +522,86 @@ class EventSolutionView(
     participant: Participant = None
     solution: Solution = None
     event: Event = None
+    teams: QuerySet[Team] = None
+    participants: QuerySet[Participant] = None
+    team_or_participant_form: SelectTeamOrParticipantForm = None
+    team_id: int = None
+    participant_id: int = None
+    team: Team = None
 
     def dispatch(self, request: HttpRequest, slug, *args, **kwargs):
         self.event = get_event_by_slug(slug=slug)
-        self.participant = get_event_participant(event=self.event, user=request.user)
+        if request.user.role != 'ученик':
+            if self.event.type == 'Индивидуальное':
+                self.participants = get_participants_with_supervisor(
+                    event=self.event,
+                    supervisor=request.user,
+                )
+            else:
+                self.teams = get_teams_with_supervisor(
+                    event=self.event,
+                    supervisor=request.user,
+                )
+
+        if request.user.role == 'ученик':
+            self.participant = get_event_participant(event=self.event, user=request.user)
+        else:
+            if self.event.type == 'Индивидуальное':
+                self.participant = get_event_participant(
+                    event=self.event,
+                    user=get_user_by_id(request.GET.get('participant_id')),
+                )
+                self.participant_id = request.GET.get('participant_id')
+            else:
+                self.team = get_team_by_id(request.GET.get('team_id'))
+                self.team_id = request.GET.get('team_id')
+
         self.is_user_participation_of_event = is_user_participation_of_event(
             event=self.event,
             user=request.user,
         )
-        if not self.is_user_participation_of_event:
+        if not self.is_user_participation_of_event and not self.teams and not self.participants:
             return redirect('register_on_event', slug=self.event.slug)
+
         if self.event.type == 'Индивидуальное':
             self.solution = get_participant_solution(
                 event=self.event,
                 participant=self.participant,
             )
         else:
-            self.solution = get_team_solution(
-                event=self.event,
-                team=self.participant.team,
-            )
+            if self.is_user_participation_of_event:
+                self.solution = get_team_solution(
+                    event=self.event,
+                    team=self.participant.team,
+                )
+            else:
+                self.solution = get_team_solution(
+                    event=self.event,
+                    team=self.team,
+                )
         self.solution_form = SolutionForm(
             data=request.POST or None,
             instance=self.solution,
         )
         return super(EventSolutionView, self).dispatch(request, slug, *args, **kwargs)
 
-    def get(self, request: HttpRequest, slug):
+    def get(self, request: HttpRequest, slug, *args, **kwargs):
         return self.render_to_response(
             context={
+                'team_or_participant_form': self.team_or_participant_form,
                 'task': get_event_task(event=self.event),
                 'event': self.event,
                 'participant': self.participant,
                 'is_user_participation_of_event': self.is_user_participation_of_event,
                 'solution_form': self.solution_form,
+                'teams': self.teams,
+                'participants': self.participants,
+                'team_id': self.team_id,
+                'participant_id': self.participant_id,
             }
         )
 
-    def post(self, request, slug):
+    def post(self, request, slug, *args, **kwargs):
         if self.solution_form.is_valid():
             solution = self.solution_form.save(commit=False)
             if self.event.type == 'Индивидуальное':
@@ -557,11 +612,16 @@ class EventSolutionView(
             solution.save()
         return self.render_to_response(
             context={
+                'team_or_participant_form': self.team_or_participant_form,
                 'task': get_event_task(event=self.event),
                 'event': self.event,
                 'participant': self.participant,
                 'is_user_participation_of_event': self.is_user_participation_of_event,
                 'solution_form': self.solution_form,
+                'teams': self.teams,
+                'participants': self.participants,
+                'team_id': self.team_id,
+                'participant_id': self.participant_id,
             }
         )
 

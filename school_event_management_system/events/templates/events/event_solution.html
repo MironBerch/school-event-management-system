@@ -14,7 +14,7 @@
                 <div class="nav-scroller py-1 mb-3 border-bottom">
                     <nav class="nav nav-underline justify-content-between">
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
-                        {% if is_user_participation_of_event %}
+                        {% if is_user_participation_of_event or teams or participants %}
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
                             {% if event.task_set.exists %}
                                 <a class="nav-item nav-link" href="#">Задачи и решение</a>
@@ -32,12 +32,53 @@
                     </nav>
                 </div>
                 <div>
+                    {% if request.user.role != 'ученик' %}
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Выбрать команду или участников
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        {% if request.user.role != 'ученик' %}
+                                            {% if teams %}
+                                            <form action="{% url 'event_solution' slug=event.slug %}" method="get">
+                                                <label for="team-select">Выберите участника:</label> 
+                                                <select name="team_id" id="post-select">
+                                                    {% for team in teams %}
+                                                        <option value="{{ team.id }}">{{ team.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit">Перейти к форме</button>
+                                            </form>
+                                            {% endif %}
+                                            {% if participants %}
+                                                <form action="{% url 'event_solution' slug=event.slug %}" method="get">
+                                                    <label for="team-select">Выберите пост:</label> 
+                                                    <select name="participant_id" id="post-select">
+                                                        {% for participant in participants %}
+                                                            <option value="{{ participant.id }}">{{ participant.user.full_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <button type="submit">Перейти к форме</button>
+                                                </form>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     <form method="POST" action="">
                         <div id="ckeditor-display">
                             {{ task.task|safe }}
                         </div>
                         {% csrf_token %}
-                        {% bootstrap_form solution_form %}
+                        {% if participant_id or team_id or is_user_participation_of_event %}
+                            {% bootstrap_form solution_form %}
+                        {% endif %}
                         <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Отправить ссылку на решение</button>
                     </form>
                 </div>

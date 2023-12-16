@@ -150,3 +150,10 @@ def is_user_with_fio_exist(fio: str) -> bool:
 def update_user_profile_year_of_study(profile: Profile) -> None:
     profile.year_of_study = None
     profile.save()
+
+
+def get_user_by_id(id: int) -> User:
+    try:
+        User.objects.get(id=id)
+    except User.DoesNotExist:
+        return None

@@ -21,7 +21,7 @@
                 <div class="nav-scroller py-1 mb-3 border-bottom">
                     <nav class="nav nav-underline justify-content-between">
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
-                        {% if is_user_participation_of_event %}
+                        {% if is_user_participation_of_event or teams or participants %}
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
                             {% if event.task_set.exists %}
                                 <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Задачи и решение</a>
