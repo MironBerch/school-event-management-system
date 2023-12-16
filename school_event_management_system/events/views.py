@@ -12,13 +12,13 @@ from django.urls import reverse
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
 
-from accounts.services import get_user_by_fio, get_user_by_id
+from accounts.services import get_user_by_fio
 from events.forms import (
     ParticipantForm,
-    SelectTeamOrParticipantForm,
     SolutionForm,
     SupervisorForm,
     TeamForm,
+    TeamOrParticipantForm,
     TeamParticipantsForm,
 )
 from events.models import Event, Participant, Solution, Team
@@ -35,6 +35,7 @@ from events.services import (
     get_event_task,
     get_events_where_user_are_participant,
     get_events_where_user_are_supervisor,
+    get_participant_by_id,
     get_participant_solution,
     get_participants_with_supervisor,
     get_published_events,
@@ -524,7 +525,7 @@ class EventSolutionView(
     event: Event = None
     teams: QuerySet[Team] = None
     participants: QuerySet[Participant] = None
-    team_or_participant_form: SelectTeamOrParticipantForm = None
+    team_or_participant_form: TeamOrParticipantForm = None
     team_id: int = None
     participant_id: int = None
     team: Team = None
@@ -547,10 +548,7 @@ class EventSolutionView(
             self.participant = get_event_participant(event=self.event, user=request.user)
         else:
             if self.event.type == 'Индивидуальное':
-                self.participant = get_event_participant(
-                    event=self.event,
-                    user=get_user_by_id(request.GET.get('participant_id')),
-                )
+                self.participant = get_participant_by_id(request.GET.get('participant_id'))
                 self.participant_id = request.GET.get('participant_id')
             else:
                 self.team = get_team_by_id(request.GET.get('team_id'))
@@ -579,6 +577,12 @@ class EventSolutionView(
                     event=self.event,
                     team=self.team,
                 )
+        if self.teams:
+            self.team_or_participant_form = TeamOrParticipantForm(teams=self.teams)
+        if self.participants:
+            self.team_or_participant_form = TeamOrParticipantForm(
+                participants=self.participants,
+            )
         self.solution_form = SolutionForm(
             data=request.POST or None,
             instance=self.solution,
@@ -607,7 +611,10 @@ class EventSolutionView(
             if self.event.type == 'Индивидуальное':
                 solution.participant = self.participant
             else:
-                solution.team = self.participant.team
+                if self.is_user_participation_of_event:
+                    solution.team = self.participant.team
+                else:
+                    solution.team = self.team
             solution.event = self.event
             solution.save()
         return self.render_to_response(

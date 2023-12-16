@@ -105,14 +105,19 @@ class SolutionForm(forms.ModelForm):
         fields = ('url', )
 
 
-class SelectTeamOrParticipantForm(forms.Form):
-    selection = forms.ChoiceField(choices=[])
+class TeamOrParticipantForm(forms.Form):
+    team_id = forms.ChoiceField(choices=[], label='Команда')
+    participant_id = forms.ChoiceField(choices=[], label='Участник')
 
     def __init__(self, *args, participants=None, teams=None, **kwargs):
         super().__init__(*args, **kwargs)
         if teams is not None:
             choices = [(object.id, str(object.name)) for object in teams]
-            self.fields['selection'].choices = choices
+            self.fields['team_id'].choices = choices
+            self.fields['participant_id'].widget = forms.HiddenInput()
+            self.fields['participant_id'].required = False
         if participants is not None:
-            choices = [(object.id, str(object.user.full_name)) for object in teams]
-            self.fields['selection'].choices = choices
+            choices = [(object.id, str(object.user.full_name)) for object in participants]
+            self.fields['participant_id'].choices = choices
+            self.fields['team_id'].widget = forms.HiddenInput()
+            self.fields['team_id'].required = False

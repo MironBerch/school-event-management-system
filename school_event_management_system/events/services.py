@@ -238,6 +238,13 @@ def get_participants_with_supervisor(
 
 def get_team_by_id(id: int) -> Team:
     try:
-        Team.objects.get(id=id)
+        return Team.objects.get(id=id)
     except Team.DoesNotExist:
+        return None
+
+
+def get_participant_by_id(id: int) -> Participant:
+    try:
+        return Participant.objects.get(id=id)
+    except Participant.DoesNotExist:
         return None
