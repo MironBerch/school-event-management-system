@@ -14,7 +14,7 @@
                 <div class="nav-scroller py-1 mb-3 border-bottom">
                     <nav class="nav nav-underline justify-content-between">
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
-                        {% if is_user_participation_of_event %}
+                        {% if is_user_participation_of_event or teams or participants %}
                             <a class="nav-item nav-link" href="#">Анкета</a>
                             {% if event.task_set.exists %}
                                 <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_solution' slug=event.slug %}">Задачи и решение</a>
@@ -32,16 +32,40 @@
                     </nav>
                 </div>
                 <div>
+                    {% if request.user.role != 'ученик' %}
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Выбрать команду или участника
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        {% if request.user.role != 'ученик' %}
+                                            <form action="{% url 'edit_participant_event' slug=event.slug %}" method="get">
+                                                {% bootstrap_form team_or_participant_form %}
+                                                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Перейти к форме</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    {% endif %}
                     <form method="POST" action="">
-                        {% csrf_token %}
-                        {% if event.type == 'Индивидуальное' %}
-                            {% bootstrap_form participant_form %}
-                        {% else %}
-                            {% bootstrap_form team_form %}
-                            {% bootstrap_form team_participants_form %}
+                        {% if participant_id or team_id or is_user_participation_of_event %}
+                            {% csrf_token %}
+                            {% if event.type == 'Индивидуальное' %}
+                                {% bootstrap_form participant_form %}
+                            {% else %}
+                                {% bootstrap_form team_form %}
+                                {% bootstrap_form team_participants_form %}
+                            {% endif %}
+                            {% bootstrap_form supervisor_form %}
+                            <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Изменить анкету</button>
                         {% endif %}
-                        {% bootstrap_form supervisor_form %}
-                        <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Изменить анкету</button>
                     </form>
                 </div>
             </div>

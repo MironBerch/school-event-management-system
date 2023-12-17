@@ -330,48 +330,113 @@ class EditParticipantEventView(
     is_user_participation_of_event: bool = False
     participant: Participant = None
     event: Event = None
+    teams: QuerySet[Team] = None
+    participants: QuerySet[Participant] = None
+    team_or_participant_form: TeamOrParticipantForm = None
+    team_id: int = None
+    participant_id: int = None
+    team: Team = None
 
     def dispatch(self, request: HttpRequest, slug, *args, **kwargs):
         self.event = get_event_by_slug(slug=slug)
-        self.participant = get_event_participant(event=self.event, user=request.user)
+        if request.user.role != 'ученик':
+            if self.event.type == 'Индивидуальное':
+                self.participants = get_participants_with_supervisor(
+                    event=self.event,
+                    supervisor=request.user,
+                )
+            else:
+                self.teams = get_teams_with_supervisor(
+                    event=self.event,
+                    supervisor=request.user,
+                )
+        if request.user.role == 'ученик':
+            self.participant = get_event_participant(event=self.event, user=request.user)
+        else:
+            if self.event.type == 'Индивидуальное':
+                self.participant = get_participant_by_id(request.GET.get('participant_id'))
+                self.participant_id = request.GET.get('participant_id')
+            else:
+                self.team = get_team_by_id(request.GET.get('team_id'))
+                self.team_id = request.GET.get('team_id')
         self.is_user_participation_of_event = is_user_participation_of_event(
             event=self.event,
             user=request.user,
         )
-        if not self.is_user_participation_of_event and request.user.role == 'ученик':
+        if not self.is_user_participation_of_event and not self.teams and not self.participants:
             return redirect('register_on_event', slug=self.event.slug)
-        if self.event.type != 'Индивидуальное':
-            self.team_form = TeamForm(
-                event=self.event,
-                team=self.participant.team,
-                data=request.POST or None,
-                initial={
-                    'name': self.participant.team.name,
-                    'school_class': self.participant.team.school_class,
-                },
+        if self.teams:
+            self.team_or_participant_form = TeamOrParticipantForm(teams=self.teams)
+        if self.participants:
+            self.team_or_participant_form = TeamOrParticipantForm(
+                participants=self.participants,
             )
-            self.team_participants_form = TeamParticipantsForm(
-                data=request.POST or None,
-                minimum_number_of_team_members=self.event.minimum_number_of_team_members,
-                maximum_number_of_team_members=self.event.maximum_number_of_team_members,
-                initial=create_initial_data_for_team_participants_form(self.participant.team),
-            )
-            self.supervisor_form = SupervisorForm(
-                data=request.POST or None,
-                initial={'fio': self.participant.team.supervisor.full_name},
-            )
+        if self.is_user_participation_of_event:
+            if self.event.type != 'Индивидуальное':
+                self.team_form = TeamForm(
+                    event=self.event,
+                    team=self.participant.team,
+                    data=request.POST or None,
+                    initial={
+                        'name': self.participant.team.name,
+                        'school_class': self.participant.team.school_class,
+                    },
+                )
+                self.team_participants_form = TeamParticipantsForm(
+                    data=request.POST or None,
+                    minimum_number_of_team_members=self.event.minimum_number_of_team_members,
+                    maximum_number_of_team_members=self.event.maximum_number_of_team_members,
+                    initial=create_initial_data_for_team_participants_form(self.participant.team),
+                )
+                self.supervisor_form = SupervisorForm(
+                    data=request.POST or None,
+                    initial={'fio': self.participant.team.supervisor.full_name},
+                )
+            else:
+                self.supervisor_form = SupervisorForm(
+                    data=request.POST or None,
+                    initial={'fio': self.participant.supervisor.full_name},
+                )
         else:
-            self.supervisor_form = SupervisorForm(
+            if self.team_id or self.participant_id:
+                if self.event.type != 'Индивидуальное':
+                    self.team_form = TeamForm(
+                        event=self.event,
+                        team=self.team,
+                        data=request.POST or None,
+                        initial={
+                            'name': self.team.name,
+                            'school_class': self.team.school_class,
+                        },
+                    )
+                    self.team_participants_form = TeamParticipantsForm(
+                        data=request.POST or None,
+                        minimum_number_of_team_members=self.event.minimum_number_of_team_members,
+                        maximum_number_of_team_members=self.event.maximum_number_of_team_members,
+                        initial=create_initial_data_for_team_participants_form(self.team),
+                    )
+                    self.supervisor_form = SupervisorForm(
+                        data=request.POST or None,
+                        initial={'fio': self.team.supervisor.full_name},
+                    )
+                else:
+                    self.supervisor_form = SupervisorForm(
+                        data=request.POST or None,
+                        initial={'fio': self.participant.supervisor.full_name},
+                    )
+        if is_user_participation_of_event:
+            self.participant_form = ParticipantForm(
                 data=request.POST or None,
-                initial={'fio': self.participant.supervisor.full_name},
+                user=request.user,
             )
-        self.participant_form = ParticipantForm(
-            data=request.POST or None,
-            user=request.user,
-        )
+        if self.participant:
+            self.participant_form = ParticipantForm(
+                data=request.POST or None,
+                user=self.participant.user,
+            )
         return super(EditParticipantEventView, self).dispatch(request, slug, *args, **kwargs)
 
-    def get(self, request: HttpRequest, slug):
+    def get(self, request: HttpRequest, slug, *args, **kwargs):
         return self.render_to_response(
             context={
                 'event': self.event,
@@ -380,105 +445,202 @@ class EditParticipantEventView(
                 'participant_form': self.participant_form,
                 'team_form': self.team_form,
                 'team_participants_form': self.team_participants_form,
+                'team_or_participant_form': self.team_or_participant_form,
+                'participant': self.participant,
+                'teams': self.teams,
+                'participants': self.participants,
+                'team_id': self.team_id,
+                'participant_id': self.participant_id,
             }
         )
 
-    def post(self, request, slug):
-        if self.event.type == 'Индивидуальное':
-            if self.supervisor_form.is_valid():
-                if (
-                    self.supervisor_form.cleaned_data['fio'] !=
-                    self.supervisor_form.initial.get('fio')
-                ):
-                    change_participant_supervisor(
-                        participant=self.participant,
-                        supervisor=get_user_by_fio(
-                            fio=self.supervisor_form.cleaned_data['fio'],
-                        ),
-                    )
-                return redirect('edit_participant_event', slug=self.event.slug)
-        elif self.event.type == 'Командное':
-            if (
-                self.team_participants_form.is_valid() and
-                self.team_form.is_valid() and
-                self.supervisor_form.is_valid()
-            ):
-                if (
-                    self.supervisor_form.cleaned_data['fio'] !=
-                    self.supervisor_form.initial.get('fio')
-                ):
-                    change_team_supervisor(
-                        team=self.participant.team,
-                        supervisor=get_user_by_fio(
-                            fio=self.supervisor_form.cleaned_data['fio'],
-                        ),
-                    )
-                if (
-                    self.team_form.cleaned_data['name'] !=
-                    self.team_form.initial.get('name')
-                ):
-                    change_team_name(
-                        team=self.participant.team,
-                        name=self.team_form.cleaned_data['name'],
-                    )
-                disband_team_participants(team=self.participant.team)
-                for field_name, field in self.team_participants_form.fields.items():
-                    if field_name.startswith('participant_'):
-                        user = get_user_by_fio(
-                            fio=self.team_participants_form.cleaned_data[field_name],
+    def post(self, request, slug, *args, **kwargs):
+        if self.is_user_participation_of_event:
+            if self.event.type == 'Индивидуальное':
+                if self.supervisor_form.is_valid():
+                    if (
+                        self.supervisor_form.cleaned_data['fio'] !=
+                        self.supervisor_form.initial.get('fio')
+                    ):
+                        change_participant_supervisor(
+                            participant=self.participant,
+                            supervisor=get_user_by_fio(
+                                fio=self.supervisor_form.cleaned_data['fio'],
+                            ),
                         )
-                        if user:
-                            join_team(
-                                user=user,
-                                team=self.participant.team,
-                                event=self.event,
+            elif self.event.type == 'Командное':
+                if (
+                    self.team_participants_form.is_valid() and
+                    self.team_form.is_valid() and
+                    self.supervisor_form.is_valid()
+                ):
+                    if (
+                        self.supervisor_form.cleaned_data['fio'] !=
+                        self.supervisor_form.initial.get('fio')
+                    ):
+                        change_team_supervisor(
+                            team=self.participant.team,
+                            supervisor=get_user_by_fio(
+                                fio=self.supervisor_form.cleaned_data['fio'],
+                            ),
+                        )
+                    if (
+                        self.team_form.cleaned_data['name'] !=
+                        self.team_form.initial.get('name')
+                    ):
+                        change_team_name(
+                            team=self.participant.team,
+                            name=self.team_form.cleaned_data['name'],
+                        )
+                    disband_team_participants(team=self.participant.team)
+                    for field_name, field in self.team_participants_form.fields.items():
+                        if field_name.startswith('participant_'):
+                            user = get_user_by_fio(
+                                fio=self.team_participants_form.cleaned_data[field_name],
                             )
-                return redirect('edit_participant_event', slug=self.event.slug)
+                            if user:
+                                join_team(
+                                    user=user,
+                                    team=self.participant.team,
+                                    event=self.event,
+                                )
+            else:
+                if (
+                    self.team_participants_form.is_valid() and
+                    self.team_form.is_valid() and
+                    self.supervisor_form.is_valid()
+                ):
+                    if (
+                        self.supervisor_form.cleaned_data['fio'] !=
+                        self.supervisor_form.initial.get('fio')
+                    ):
+                        change_team_supervisor(
+                            team=self.participant.team,
+                            supervisor=get_user_by_fio(
+                                fio=self.supervisor_form.cleaned_data['fio'],
+                            ),
+                        )
+                    if (
+                        self.team_form.cleaned_data['school_class'] !=
+                        self.team_form.initial.get('school_class')
+                    ):
+                        change_team_school_class(
+                            team=self.participant.team,
+                            school_class=self.team_form.cleaned_data['school_class'],
+                        )
+                    if (
+                        self.team_form.cleaned_data['name'] !=
+                        self.team_form.initial.get('name')
+                    ):
+                        change_team_name(
+                            team=self.participant.team,
+                            name=self.team_form.cleaned_data['name'],
+                        )
+                    disband_team_participants(team=self.participant.team)
+                    for field_name, field in self.team_participants_form.fields.items():
+                        if field_name.startswith('participant_'):
+                            user = get_user_by_fio(
+                                fio=self.team_participants_form.cleaned_data[field_name],
+                            )
+                            if user:
+                                join_team(
+                                    user=user,
+                                    team=self.participant.team,
+                                    event=self.event,
+                                )
         else:
-            if (
-                self.team_participants_form.is_valid() and
-                self.team_form.is_valid() and
-                self.supervisor_form.is_valid()
-            ):
-                if (
-                    self.supervisor_form.cleaned_data['fio'] !=
-                    self.supervisor_form.initial.get('fio')
-                ):
-                    change_team_supervisor(
-                        team=self.participant.team,
-                        supervisor=get_user_by_fio(
-                            fio=self.supervisor_form.cleaned_data['fio'],
-                        ),
-                    )
-                if (
-                    self.team_form.cleaned_data['school_class'] !=
-                    self.team_form.initial.get('school_class')
-                ):
-                    change_team_school_class(
-                        team=self.participant.team,
-                        school_class=self.team_form.cleaned_data['school_class'],
-                    )
-                if (
-                    self.team_form.cleaned_data['name'] !=
-                    self.team_form.initial.get('name')
-                ):
-                    change_team_name(
-                        team=self.participant.team,
-                        name=self.team_form.cleaned_data['name'],
-                    )
-                disband_team_participants(team=self.participant.team)
-                for field_name, field in self.team_participants_form.fields.items():
-                    if field_name.startswith('participant_'):
-                        user = get_user_by_fio(
-                            fio=self.team_participants_form.cleaned_data[field_name],
+            if self.event.type == 'Индивидуальное':
+                if self.supervisor_form.is_valid():
+                    if (
+                        self.supervisor_form.cleaned_data['fio'] !=
+                        self.supervisor_form.initial.get('fio')
+                    ):
+                        change_participant_supervisor(
+                            participant=self.participant,
+                            supervisor=get_user_by_fio(
+                                fio=self.supervisor_form.cleaned_data['fio'],
+                            ),
                         )
-                        if user:
-                            join_team(
-                                user=user,
-                                team=self.participant.team,
-                                event=self.event,
+            elif self.event.type == 'Командное':
+                if (
+                    self.team_participants_form.is_valid() and
+                    self.team_form.is_valid() and
+                    self.supervisor_form.is_valid()
+                ):
+                    if (
+                        self.supervisor_form.cleaned_data['fio'] !=
+                        self.supervisor_form.initial.get('fio')
+                    ):
+                        change_team_supervisor(
+                            team=self.team,
+                            supervisor=get_user_by_fio(
+                                fio=self.supervisor_form.cleaned_data['fio'],
+                            ),
+                        )
+                    if (
+                        self.team_form.cleaned_data['name'] !=
+                        self.team_form.initial.get('name')
+                    ):
+                        change_team_name(
+                            team=self.team,
+                            name=self.team_form.cleaned_data['name'],
+                        )
+                    disband_team_participants(team=self.team)
+                    for field_name, field in self.team_participants_form.fields.items():
+                        if field_name.startswith('participant_'):
+                            user = get_user_by_fio(
+                                fio=self.team_participants_form.cleaned_data[field_name],
                             )
-                return redirect('edit_participant_event', slug=self.event.slug)
+                            if user:
+                                join_team(
+                                    user=user,
+                                    team=self.team,
+                                    event=self.event,
+                                )
+            else:
+                if (
+                    self.team_participants_form.is_valid() and
+                    self.team_form.is_valid() and
+                    self.supervisor_form.is_valid()
+                ):
+                    if (
+                        self.supervisor_form.cleaned_data['fio'] !=
+                        self.supervisor_form.initial.get('fio')
+                    ):
+                        change_team_supervisor(
+                            team=self.team,
+                            supervisor=get_user_by_fio(
+                                fio=self.supervisor_form.cleaned_data['fio'],
+                            ),
+                        )
+                    if (
+                        self.team_form.cleaned_data['school_class'] !=
+                        self.team_form.initial.get('school_class')
+                    ):
+                        change_team_school_class(
+                            team=self.team,
+                            school_class=self.team_form.cleaned_data['school_class'],
+                        )
+                    if (
+                        self.team_form.cleaned_data['name'] !=
+                        self.team_form.initial.get('name')
+                    ):
+                        change_team_name(
+                            team=self.team,
+                            name=self.team_form.cleaned_data['name'],
+                        )
+                    disband_team_participants(team=self.team)
+                    for field_name, field in self.team_participants_form.fields.items():
+                        if field_name.startswith('participant_'):
+                            user = get_user_by_fio(
+                                fio=self.team_participants_form.cleaned_data[field_name],
+                            )
+                            if user:
+                                join_team(
+                                    user=user,
+                                    team=self.team,
+                                    event=self.event,
+                                )
 
         return self.render_to_response(
             context={
@@ -488,7 +650,12 @@ class EditParticipantEventView(
                 'participant_form': self.participant_form,
                 'team_form': self.team_form,
                 'team_participants_form': self.team_participants_form,
+                'team_or_participant_form': self.team_or_participant_form,
                 'participant': self.participant,
+                'teams': self.teams,
+                'participants': self.participants,
+                'team_id': self.team_id,
+                'participant_id': self.participant_id,
             }
         )
 
