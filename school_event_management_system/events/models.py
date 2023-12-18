@@ -126,12 +126,18 @@ class Event(models.Model):
 
     date_of_starting_registration = models.DateField(
         verbose_name=_('дата начала регистрации'),
+        blank=True,
+        null=True,
     )
     date_of_ending_registration = models.DateField(
         verbose_name=_('дата окончания регистрации'),
+        blank=True,
+        null=True,
     )
     date_of_starting_event = models.DateField(
         verbose_name=_('дата начала мероприятия'),
+        blank=True,
+        null=True,
     )
 
     published = models.BooleanField(
