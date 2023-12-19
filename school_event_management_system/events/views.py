@@ -141,7 +141,9 @@ class EventQRCodeView(
             box_size=31,
             border=1,
         )
-        qr.add_data(reverse('event_detail', kwargs={'slug': event.slug}))
+        qr.add_data(request.build_absolute_uri(
+            reverse('event_detail', kwargs={'slug': event.slug})),
+        )
         qr.make(fit=True)
         qr_code = qr.make_image(fill_color='black', back_color='white')
         buffered = BytesIO()
@@ -223,14 +225,25 @@ class RegisterOnEventView(
 
     def post(self, request, slug):
         if self.event.type == 'Индивидуальное':
-            if self.supervisor_form.is_valid():
-                join_event(
-                    user=request.user,
-                    supervisor=get_user_by_fio(
-                        fio=self.supervisor_form.cleaned_data['fio'],
-                    ),
-                    event=self.event,
-                )
+            if self.supervisor_form.is_valid() and self.participant_form.is_valid():
+                if request.user.role == 'ученик':
+                    join_event(
+                        user=request.user,
+                        supervisor=get_user_by_fio(
+                            fio=self.supervisor_form.cleaned_data['fio'],
+                        ),
+                        event=self.event,
+                    )
+                else:
+                    join_event(
+                        user=get_user_by_fio(
+                            fio=self.participant_form.cleaned_data['participant_fio'],
+                        ),
+                        supervisor=get_user_by_fio(
+                            fio=self.supervisor_form.cleaned_data['fio'],
+                        ),
+                        event=self.event,
+                    )
                 messages.add_message(
                     request,
                     messages.SUCCESS,

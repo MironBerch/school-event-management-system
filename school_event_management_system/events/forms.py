@@ -42,19 +42,21 @@ class TeamForm(forms.Form):
 
 
 class ParticipantForm(forms.Form):
-    def __init__(
-            self,
-            user,
-            *args,
-            **kwargs,
-    ):
+    def __init__(self, user, *args, **kwargs):
         super(ParticipantForm, self).__init__(*args, **kwargs)
-        self.fields['fio'] = forms.CharField(
-            max_length=255,
-            label='ФИО участника*',
-            disabled=True,
-            initial=user.full_name,
-        )
+        if user.role == 'ученик':
+            self.fields['participant_fio'] = forms.CharField(
+                max_length=255,
+                label='ФИО участника*',
+                disabled=True,
+                initial=user.full_name,
+            )
+        else:
+            self.fields['participant_fio'] = forms.CharField(
+                max_length=255,
+                label='ФИО участника*',
+                initial=None,
+            )
 
 
 class SupervisorForm(forms.Form):
