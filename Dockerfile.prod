@@ -40,6 +40,8 @@ RUN pip install --no-cache /wheels/*
 
 COPY . $APP_HOME
 
+RUN mkdir school_event_management_system/media
+
 RUN chown -R app:app $APP_HOME
 
 USER app
