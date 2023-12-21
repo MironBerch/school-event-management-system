@@ -45,3 +45,5 @@ RUN mkdir school_event_management_system/media
 RUN chown -R app:app $APP_HOME
 
 USER app
+
+ENTRYPOINT ["sh", "/home/app/web/configuration/docker/entrypoint.sh"]
