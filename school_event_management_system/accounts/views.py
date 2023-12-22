@@ -48,7 +48,7 @@ class SignUpView(
     TemplateResponseMixin,
     View,
 ):
-    """View for creating a new account."""
+    """Просмотр для создания новой учетной записи."""
 
     form_class = SignUpForm
     template_name = 'registration/signup.html'
@@ -83,7 +83,7 @@ class SignInView(
     AnonymousUserRequiredMixin,
     LoginView,
 ):
-    """View for signing in."""
+    """Посмотр для входа в систему."""
 
     form_class = AuthenticationForm
     template_name = 'registration/signin.html'
@@ -93,7 +93,7 @@ class SignOutView(
     LoginRequiredMixin,
     LogoutView,
 ):
-    """View for signing out."""
+    """Просмотр для выхода из системы."""
 
     template_name = 'registration/signout.html'
     next_page = None
@@ -103,7 +103,7 @@ class AccountActivationView(
     LoginRequiredMixin,
     View,
 ):
-    """View for confirming user's email."""
+    """Просмотр для подтверждения адреса электронной почты пользователя."""
 
     def get(self, request: HttpRequest, uidb64, token, *args, **kwargs):
         try:
@@ -129,7 +129,7 @@ class AccountActivationView(
 
 
 class PasswordResetView(PasswordResetView):
-    """View for resetting a password."""
+    """Просмотр для сброса пароля."""
 
     template_name = 'registration/password_reset.html'
     success_url = reverse_lazy('password_reset_done')
@@ -139,13 +139,13 @@ class PasswordResetView(PasswordResetView):
 
 
 class PasswordResetDoneView(PasswordResetDoneView):
-    """View for show that resetting a password is done."""
+    """Просмотр для показа, что сброс пароля выполнен."""
 
     template_name = 'registration/password_reset_done.html'
 
 
 class PasswordResetConfirmView(PasswordResetConfirmView):
-    """View for confirm resetting a password."""
+    """Просмотр для подтверждения сброса пароля."""
 
     form_class = SetPasswordForm
     template_name = 'registration/password_reset_confirm.html'
@@ -153,13 +153,13 @@ class PasswordResetConfirmView(PasswordResetConfirmView):
 
 
 class PasswordResetCompleteView(PasswordResetCompleteView):
-    """View for show that resetting a password is complete."""
+    """Просмотр для показа, что сброс пароля завершен."""
 
     template_name = 'registration/password_reset_complete.html'
 
 
 class PasswordChangeView(PasswordChangeView):
-    """View for changing a password."""
+    """Просмотр для смены пароля."""
 
     form_class = PasswordChangeForm
     template_name = 'registration/password_change.html'
@@ -167,7 +167,7 @@ class PasswordChangeView(PasswordChangeView):
 
 
 class PasswordChangeDoneView(PasswordChangeDoneView):
-    """View for show that changing a password is complete."""
+    """Просмотр для показа, что смена пароля завершена."""
 
     template_name = 'registration/password_change_done.html'
 
@@ -176,7 +176,9 @@ class ActivationRequiredView(
     LoginRequiredMixin,
     TemplateView,
 ):
-    """Display error page - page requires confirmed email."""
+    """
+    Отображение страницы ошибки: для страницы требуется подтвержденный адрес электронной почты.
+    """
 
     template_name = 'registration/account_activation_required.html'
 
@@ -186,7 +188,7 @@ class SendConfirmationEmailView(
     LoginRequiredMixin,
     View,
 ):
-    """View for sending a confirmation email to a user."""
+    """Просмотр отправки электронного письма с подтверждением пользователю."""
 
     def get(self, request: HttpRequest, *args, **kwargs):
         send_verification_link(get_current_site(request).domain, request.scheme, request.user)
@@ -198,7 +200,7 @@ class AccountSettingsDashboardView(
     LoginRequiredMixin,
     TemplateView,
 ):
-    """View for showing an account dashboard."""
+    """Представление для отображения панели управления учетной записью."""
 
     template_name = 'settings/settings_dashboard.html'
 
@@ -208,7 +210,7 @@ class PersonalInfoEditView(
     TemplateResponseMixin,
     View,
 ):
-    """View for editing user personal info."""
+    """Просмотр для редактирования личной информации пользователя."""
 
     template_name = 'settings/user_form.html'
     profile_form: ProfileForm = None
@@ -280,6 +282,6 @@ class SecurityDashboardView(
     LoginRequiredMixin,
     TemplateView,
 ):
-    """View for showing a `Login & Security` dashboard."""
+    """Представление для отображения панели управления `Login & Security`."""
 
     template_name = 'settings/security_dashboard.html'

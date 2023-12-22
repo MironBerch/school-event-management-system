@@ -4,7 +4,7 @@ from django.urls import reverse
 
 
 class AnonymousUserRequiredMixin:
-    """Verify that current user is not logged in."""
+    """Убедитесь, что текущий пользователь не вошел в систему."""
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if request.user.is_authenticated:
@@ -13,7 +13,7 @@ class AnonymousUserRequiredMixin:
 
 
 class UnconfirmedEmailRequiredMixin:
-    """Verify that current user has not confirmed an email address yet."""
+    """Убедитесь, что текущий пользователь еще не подтвердил адрес электронной почты."""
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if not request.user.is_authenticated:

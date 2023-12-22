@@ -12,7 +12,7 @@ from accounts.managers import ActivatedAccountsManager, UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Custom `User` model."""
+    """Пользовательская модель `User`."""
 
     profile: 'Profile'
     username = None
@@ -96,7 +96,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
-    """Profile for `User`."""
+    """Профиль для `User`."""
 
     date_of_birth = models.DateField(
         verbose_name=_('дата рождения'),

@@ -20,7 +20,7 @@ from accounts.tasks import send_password_reset_code
 
 
 class SignUpForm(UserCreationForm):
-    """Form for signing up/creating new account."""
+    """Форма для регистрации/создания нового аккаунта."""
 
     email = forms.EmailField(
         widget=forms.EmailInput(
@@ -105,7 +105,7 @@ class SignUpForm(UserCreationForm):
 
 
 class AuthenticationForm(AuthenticationForm):
-    """Custom Authentication form."""
+    """Пользовательская форма аутентификации."""
 
     username = forms.EmailField(
         widget=forms.EmailInput(
@@ -123,7 +123,7 @@ class AuthenticationForm(AuthenticationForm):
 
 
 class AdminUserChangeForm(UserChangeForm):
-    """Form for editing `User` (used on the admin panel)."""
+    """Форма редактирования `User` (используется в админ-панели)."""
 
     class Meta:
         model = User
@@ -137,9 +137,9 @@ class AdminUserChangeForm(UserChangeForm):
 
 class PasswordResetForm(PasswordResetForm):
     """
-    Custom password reset form.
+    Пользовательская форма сброса пароля.
 
-    Send emails using Celery.
+    Отправляйте электронные письма с помощью Celery.
     """
 
     email = forms.EmailField(
@@ -177,7 +177,7 @@ class PasswordResetForm(PasswordResetForm):
 
 
 class SetPasswordForm(SetPasswordForm):
-    """Custom set password form."""
+    """Пользовательская форма установки пароля."""
 
     def __init__(self, *args, **kwargs):
         super(SetPasswordForm, self).__init__(*args, **kwargs)
@@ -186,7 +186,7 @@ class SetPasswordForm(SetPasswordForm):
 
 
 class PasswordChangeForm(PasswordChangeForm):
-    """Password change form."""
+    """Форма смены пароля."""
 
     def __init__(self, *args, **kwargs):
         super(PasswordChangeForm, self).__init__(*args, **kwargs)
@@ -196,7 +196,7 @@ class PasswordChangeForm(PasswordChangeForm):
 
 
 class UserInfoForm(forms.ModelForm):
-    """Form for editing user info."""
+    """Форма редактирования информации о пользователе."""
 
     patronymic = forms.CharField(
         required=False,
@@ -222,7 +222,7 @@ class UserInfoForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    """Form for editing profile info."""
+    """Форма редактирования информации профиля."""
 
     class Meta:
         model = Profile
@@ -268,9 +268,9 @@ class ProfileForm(forms.ModelForm):
         return cleaned_data
 
     def clean_date_of_birth(self):
-        """Handles input of date_of_birth field.
+        """Обрабатывает ввод поля date_of_birth.
 
-        date of birth can't be in the future, must be at least 5 years old
+        дата рождения не может быть в будущем, ей должно быть не менее 5 лет
         """
         date_of_birth = self.cleaned_data['date_of_birth']
         if date_of_birth:

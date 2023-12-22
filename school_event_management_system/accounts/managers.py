@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    """Manager for custom `User` model."""
+    """Менеджер пользовательской модели `User`."""
 
     use_in_migrations = True
 
@@ -71,7 +71,7 @@ class UserManager(BaseUserManager):
 
 
 class ActivatedAccountsManager(UserManager):
-    """Manager for all users that have confirmed their email."""
+    """Менеджер для всех пользователей, подтвердивших свой адрес электронной почты."""
 
     def get_queryset(self):
         base_queryset = super(ActivatedAccountsManager, self).get_queryset()

@@ -23,8 +23,19 @@ def _send_password_reset_email(
         to_email: str,
         html_email_template_name: Optional[str] = None,
 ) -> None:
+    """
+    Функция для отправки электронного письма с инструкцией по сбросу пароля.
+
+    Аргументы:
+    - subject_template_name (строка): Имя шаблона заголовка электронной почты.
+    - email_template_name (строка): Имя шаблона текста электронной почты.
+    - context (словарь): Контекстные данные для заполнения шаблонов.
+    - from_email (строка): Адрес электронной почты отправителя.
+    - to_email (строка): Адрес электронной почты получателя.
+    - html_email_template_name (строка, необязательно): Имя шаблона HTML-электронной почты.
+    """
+
     subject = render_to_string(subject_template_name, context)
-    # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
     body = render_to_string(email_template_name, context)
 
@@ -72,7 +83,7 @@ def send_verification_email(*, domain: str, scheme: str, user_id: Union[int, str
 
 
 def send_verification_link(domain: str, scheme: str, user: User) -> None:
-    """Send email verification link."""
+    """Отправить ссылку для подтверждения электронной почты."""
     user_id = user.pk
     email_sent_key = f'accounts:user:{user_id}:email.sent'
     if not is_cooldown_ended(email_sent_key):
