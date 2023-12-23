@@ -1,6 +1,6 @@
 #!/bin/sh
 
-while ! nc -z $DB_HOST $DB_PORT; do
+while ! nc -z db 5432; do
   sleep 0.1
 done
 

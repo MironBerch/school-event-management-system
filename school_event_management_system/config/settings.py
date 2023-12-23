@@ -170,3 +170,129 @@ INTERNAL_IPS = [ip[: ip.rfind('.')] + '.1' for ip in ips] + ['127.0.0.1', '10.0.
 # Ckeditor configuration
 
 CKEDITOR_UPLOAD_PATH = 'content/ckeditor/'
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'allowedContent': True,
+        'skin': 'moono',
+        'width': 'auto',
+        'height': 'auto',
+        'toolbar_Basic': [
+            ['Source', '-', 'Bold', 'Italic']
+        ],
+        'toolbar_YourCustomToolbarConfig': [
+            {
+                'name': 'document',
+                'items': [
+                    'Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates',
+                ],
+            },
+            {
+                'name': 'clipboard',
+                'items': [
+                    'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo',
+                ],
+            },
+            {
+                'name': 'editing',
+                'items': ['Find', 'Replace', '-', 'SelectAll']
+            },
+            {
+                'name': 'forms',
+                'items': [
+                    'Checkbox',
+                    'Radio',
+                    'TextField',
+                    'Textarea',
+                    'Select',
+                    'Button',
+                    'ImageButton',
+                    'HiddenField',
+                ],
+            },
+            '/',
+            {
+                'name': 'basicstyles',
+                'items': [
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                    'Strike',
+                    'Subscript',
+                    'Superscript',
+                    '-',
+                    'RemoveFormat',
+                ],
+            },
+            {
+                'name': 'paragraph',
+                'items': [
+                    'NumberedList',
+                    'BulletedList',
+                    '-',
+                    'Outdent',
+                    'Indent',
+                    '-',
+                    'Blockquote',
+                    'CreateDiv',
+                    '-',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'JustifyBlock',
+                    '-',
+                    'BidiLtr',
+                    'BidiRtl',
+                ],
+            },
+            {
+                'name': 'links', 'items': ['Link', 'Unlink', 'Anchor', 'Youtube'],
+            },
+            {
+                'name': 'insert',
+                'items': [
+                    'Image',
+                    'Flash',
+                    'Table',
+                    'HorizontalRule',
+                    'Smiley',
+                    'SpecialChar',
+                    'PageBreak',
+                    'Iframe',
+                ],
+            },
+            '/',
+            {
+                'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize'],
+            },
+            {
+                'name': 'colors', 'items': ['TextColor', 'BGColor'],
+            },
+            {
+                'name': 'tools', 'items': ['Maximize', 'ShowBlocks'],
+            },
+            '/',
+            {
+                'name': 'yourcustomtools', 'items': ['Preview', 'Maximize'],
+            },
+        ],
+        'toolbar': '',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join(
+            [
+                'uploadimage',
+                'div',
+                'autolink',
+                'autoembed',
+                'embedsemantic',
+                'autogrow',
+                'widget',
+                'lineutils',
+                'clipboard',
+                'dialog',
+                'dialogui',
+                'elementspath',
+            ],
+        ),
+    },
+}
