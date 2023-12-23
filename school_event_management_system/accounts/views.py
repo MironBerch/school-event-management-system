@@ -83,7 +83,7 @@ class SignInView(
     AnonymousUserRequiredMixin,
     LoginView,
 ):
-    """Посмотр для входа в систему."""
+    """Просмотр для входа в систему."""
 
     form_class = AuthenticationForm
     template_name = 'registration/signin.html'

@@ -6,6 +6,6 @@ class SitemapView(
     LoginRequiredMixin,
     TemplateView,
 ):
-    """View for display site map."""
+    """Просмотр для отображения карты сайта."""
 
     template_name = 'main/site_map.html'

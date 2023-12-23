@@ -4,10 +4,10 @@ from config.redis import redis_connection
 
 
 def is_cooldown_ended(key: str) -> bool:
-    """Return True if cooldown has ended, False otherwise."""
+    """Возвращает True, если время восстановления закончилось, в противном случае — False."""
     return not bool(redis_connection.get(key))
 
 
 def set_key_with_timeout(key: str, timeout: int, value: int) -> Any:
-    """Set a key-value pair in Redis with a specified timeout."""
+    """Установите пару ключ-значение в Redis с указанным таймаутом.."""
     return redis_connection.setex(key, timeout, value)

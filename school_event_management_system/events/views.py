@@ -55,7 +55,7 @@ class EventListView(
     TemplateResponseMixin,
     View,
 ):
-    """View list of events."""
+    """Просмотр списка событий."""
 
     template_name = 'events/events_list.html'
 
@@ -72,7 +72,7 @@ class EventArchiveView(
     TemplateResponseMixin,
     View,
 ):
-    """View list of archived events."""
+    """Просмотр списка заархивированных событий."""
 
     template_name = 'events/events_archive.html'
 
@@ -89,7 +89,7 @@ class EventDetailView(
     TemplateResponseMixin,
     View,
 ):
-    """Detail event view."""
+    """Детальный просмотр события."""
 
     template_name = 'events/event_detail.html'
 
@@ -121,7 +121,7 @@ class EventQRCodeView(
     TemplateResponseMixin,
     View,
 ):
-    """Detail event QR code view."""
+    """Детальный просмотр QR-кода события."""
 
     template_name = 'events/event_qr_code.html'
 
@@ -168,7 +168,7 @@ class RegisterOnEventView(
     TemplateResponseMixin,
     View,
 ):
-    """View for register on event."""
+    """Просмотр регистрации на мероприятие."""
 
     template_name = 'events/register_on_event.html'
     team_form: TeamForm = None
@@ -333,7 +333,7 @@ class EditParticipantEventView(
     TemplateResponseMixin,
     View,
 ):
-    """View for register on event."""
+    """Просмотр для изменения анкет на мероприятии."""
 
     template_name = 'events/edit_participant_event.html'
     team_form: TeamForm = None
@@ -678,7 +678,7 @@ class DiplomasListView(
     TemplateResponseMixin,
     View,
 ):
-    """List view of diplomas that the user received for participating in events."""
+    """Просмотр списка дипломов, которые пользователь получил за участие в мероприятиях."""
 
     template_name = 'diplomas/diploma_list.html'
 
@@ -695,7 +695,7 @@ class EventSolutionView(
     TemplateResponseMixin,
     View,
 ):
-    """View for edit team or participant event solution."""
+    """Просмотр для редактирования решения для мероприятия команды или участника."""
 
     template_name = 'events/event_solution.html'
     solution_form: SolutionForm = None
@@ -818,7 +818,7 @@ class ParticipantEventsView(
     TemplateResponseMixin,
     View,
 ):
-    """View for display all events where user are participant."""
+    """Просмотр для отображения всех событий, в которых участвует пользователь."""
 
     template_name = 'events/participant_events.html'
 
@@ -835,7 +835,7 @@ class SupervisorEventsView(
     TemplateResponseMixin,
     View,
 ):
-    """View for display all events where user are supervisor."""
+    """Просмотр для отображения всех событий, где пользователь является руководителем."""
 
     template_name = 'events/supervisor_events.html'
 
