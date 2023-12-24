@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'bootstrap_datepicker_plus',
     'ckeditor',
+    'ckeditor_uploader',
 
     # local
     'accounts.apps.AccountsConfig',

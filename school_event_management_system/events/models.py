@@ -1,4 +1,4 @@
-from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -60,7 +60,7 @@ class Event(models.Model):
         max_length=100,
         unique=True,
     )
-    description = RichTextField(
+    description = RichTextUploadingField(
         verbose_name=_('описание мероприятия'),
         blank=True,
         null=True,
@@ -284,7 +284,7 @@ class Task(models.Model):
         verbose_name=_('мероприятие'),
         on_delete=models.CASCADE,
     )
-    task = RichTextField(
+    task = RichTextUploadingField(
         verbose_name=_('задание мероприятия'),
         blank=True,
         null=True,
