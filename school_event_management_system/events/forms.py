@@ -1,6 +1,6 @@
 from django import forms
 
-from accounts.services import is_user_with_fio_exist
+from accounts.services import get_user_by_fio
 from events.models import Solution
 from events.services import team_with_name_exist_in_event
 
@@ -58,6 +58,16 @@ class ParticipantForm(forms.Form):
                 initial=None,
             )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        fio = cleaned_data.get('participant_fio')
+        user = get_user_by_fio(fio)
+        if not user:
+            raise forms.ValidationError('Нет пользователя с таким ФИО')
+        if user.role != 'ученик':
+            raise forms.ValidationError('Пользователь должен являться учеником')
+        return cleaned_data
+
 
 class SupervisorForm(forms.Form):
     fio = forms.CharField(
@@ -67,8 +77,12 @@ class SupervisorForm(forms.Form):
 
     def clean_fio(self):
         fio = self.cleaned_data.get('fio')
-        if not is_user_with_fio_exist(fio):
+        user = get_user_by_fio(fio)
+        if not user:
             raise forms.ValidationError('Нет пользователя с таким ФИО')
+        else:
+            if user.role == 'ученик':
+                raise forms.ValidationError('Пользователь не должен являться учеником')
         return fio
 
 
@@ -96,8 +110,12 @@ class TeamParticipantsForm(forms.Form):
             field_name = f'participant_{i}'
             fio = cleaned_data.get(field_name)
             if fio:
-                if not is_user_with_fio_exist(fio):
+                user = get_user_by_fio(fio)
+                if not user:
                     self.add_error(field_name, 'Нет пользователя с таким ФИО')
+                else:
+                    if user.role != 'ученик':
+                        self.add_error(field_name, 'Пользователь должен являться учеником')
         return cleaned_data
 
 
