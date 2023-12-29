@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
+
+{% block title %}
+    Рассылка на почту &bull;
+{% endblock %}
+
+{% block content %}
+    <div class="">\
+        <h1 class="h1 text-center">Рассылка на почту</h1>
+        <div class="d-flex align-items-center py-4 bg-body-tertiary">
+            <form class="form w-100 m-auto" action="" method="POST">
+                {% csrf_token %}
+                {{ mailing_form.media }}
+                {% bootstrap_form mailing_form %}
+                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

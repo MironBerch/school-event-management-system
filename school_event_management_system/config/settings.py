@@ -59,6 +59,7 @@ TEMPLATES = [
             BASE_DIR / 'accounts/templates',
             BASE_DIR / 'events/templates',
             BASE_DIR / 'main/templates',
+            BASE_DIR / 'mailings/templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -178,10 +179,11 @@ CKEDITOR_CONFIGS = {
         'skin': 'moono',
         'width': 'auto',
         'height': 'auto',
+        'toolbar': 'Custom',
         'toolbar_Basic': [
             ['Source', '-', 'Bold', 'Italic']
         ],
-        'toolbar_YourCustomToolbarConfig': [
+        'toolbar_Custom': [
             {
                 'name': 'document',
                 'items': [
@@ -197,19 +199,6 @@ CKEDITOR_CONFIGS = {
             {
                 'name': 'editing',
                 'items': ['Find', 'Replace', '-', 'SelectAll']
-            },
-            {
-                'name': 'forms',
-                'items': [
-                    'Checkbox',
-                    'Radio',
-                    'TextField',
-                    'Textarea',
-                    'Select',
-                    'Button',
-                    'ImageButton',
-                    'HiddenField',
-                ],
             },
             '/',
             {
@@ -270,14 +259,9 @@ CKEDITOR_CONFIGS = {
                 'name': 'colors', 'items': ['TextColor', 'BGColor'],
             },
             {
-                'name': 'tools', 'items': ['Maximize', 'ShowBlocks'],
-            },
-            '/',
-            {
-                'name': 'yourcustomtools', 'items': ['Preview', 'Maximize'],
+                'name': 'tools', 'items': ['Maximize', 'ShowBlocks', 'Preview'],
             },
         ],
-        'toolbar': '',
         'tabSpaces': 4,
         'extraPlugins': ','.join(
             [

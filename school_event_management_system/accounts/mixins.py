@@ -23,3 +23,16 @@ class UnconfirmedEmailRequiredMixin:
             return redirect(reverse('settings_dashboard'))
 
         return super(UnconfirmedEmailRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class SuperOrStaffUserRequiredMixin:
+    """Убедитесь, что текущий пользователь явлиется `is_superuser` или `is_staff`."""
+
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('signin'))
+
+        if not (request.user.is_superuser or request.user.is_staff):
+            return redirect(reverse('settings_dashboard'))
+
+        return super(SuperOrStaffUserRequiredMixin, self).dispatch(request, *args, **kwargs)

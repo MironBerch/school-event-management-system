@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('events.urls')),
     path('', include('main.urls')),
+    path('', include('mailings.urls')),
 
     path('', RedirectView.as_view(url='/events/', permanent=True)),
 
