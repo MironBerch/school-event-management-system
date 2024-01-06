@@ -10,11 +10,12 @@ ENV PYTHONPATH /app
 WORKDIR /app
 
 # Copy requirements files
-COPY ./requirements.txt /app/requirements.txt
+COPY requirements/requirements.txt requirements.txt
+COPY requirements/requirements.lint.txt requirements.lint.txt
 
 # Install project dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip-tools
+RUN pip-sync requirements.txt requirements.*.txt
 
 # Copy project files
 COPY . .
