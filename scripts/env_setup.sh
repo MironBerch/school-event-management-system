@@ -3,10 +3,11 @@
 ORIGINAL_DIR=$(pwd)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ENV_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && cd .. && pwd )"
+ENV_FILE="../.env"
 
 cd "$DIR"
 
-if [ -f "../.env" ]; then
+if [ -f "$ENV_FILE" ]; then
     echo "Загрузка переменных среды из $(realpath "$ENV_FILE")"
     while IFS= read -r line; do
         if [[ ! "$line" =~ ^[[:space:]]*# && ! -z "$line" ]]; then

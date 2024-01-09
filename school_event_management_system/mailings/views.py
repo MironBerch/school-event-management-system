@@ -37,8 +37,6 @@ class MailingCreateView(
         )
 
     def post(self, request: HttpRequest):
-        if self.recipients_form.is_valid() and self.mailing_form.is_valid():
-            pass
         return self.render_to_response(
             context={
                 'mailing_form': self.mailing_form,
