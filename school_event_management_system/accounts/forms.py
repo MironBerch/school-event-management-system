@@ -3,6 +3,7 @@ from os import environ
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 from django import forms
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
@@ -65,6 +66,7 @@ class SignUpForm(UserCreationForm):
                 'placeholder': 'Пароль',
             },
         ),
+        help_text=password_validation.password_validators_help_text_html(),
     )
 
     password2 = forms.CharField(

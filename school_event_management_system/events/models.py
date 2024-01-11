@@ -93,6 +93,7 @@ class Event(models.Model):
         ],
         blank=True,
         null=True,
+        default=1,
     )
     minimum_number_of_team_members = models.IntegerField(
         verbose_name=_('минимальное количество участников в команде'),
@@ -102,6 +103,7 @@ class Event(models.Model):
         ],
         blank=True,
         null=True,
+        default=1,
     )
 
     status = models.CharField(

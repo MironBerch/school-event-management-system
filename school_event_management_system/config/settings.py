@@ -10,6 +10,14 @@ DEBUG = int(environ.get('DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_COOKIE_DOMAIN = '*'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SECURE_HSTS_SECONDS = 31536000
+
+CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 

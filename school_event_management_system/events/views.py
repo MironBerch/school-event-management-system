@@ -51,7 +51,6 @@ from events.services import (
 
 
 class EventListView(
-    LoginRequiredMixin,
     TemplateResponseMixin,
     View,
 ):
@@ -68,7 +67,6 @@ class EventListView(
 
 
 class EventArchiveView(
-    LoginRequiredMixin,
     TemplateResponseMixin,
     View,
 ):
@@ -85,7 +83,6 @@ class EventArchiveView(
 
 
 class EventDetailView(
-    LoginRequiredMixin,
     TemplateResponseMixin,
     View,
 ):
@@ -117,7 +114,6 @@ class EventDetailView(
 
 
 class EventQRCodeView(
-    LoginRequiredMixin,
     TemplateResponseMixin,
     View,
 ):
