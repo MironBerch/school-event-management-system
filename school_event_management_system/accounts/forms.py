@@ -84,6 +84,7 @@ class SignUpForm(UserCreationForm):
             'surname',
             'name',
             'patronymic',
+            'role',
             'password1',
             'password2',
         )

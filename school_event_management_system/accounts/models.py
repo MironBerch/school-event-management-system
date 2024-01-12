@@ -47,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class RoleChoices(models.TextChoices):
         STUDENT = 'ученик', 'ученик'
         TEACHER = 'учитель', 'учитель'
+        ANOTHER = 'другая', 'другая'
 
     role = models.CharField(
         max_length=10,

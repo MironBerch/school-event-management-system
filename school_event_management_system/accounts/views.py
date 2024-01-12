@@ -71,7 +71,7 @@ class SignUpView(
                 request.scheme,
                 user,
             )
-            return redirect('settings_dashboard')
+            return redirect('events_list')
         return self.render_to_response(
             context={
                 'form': form,

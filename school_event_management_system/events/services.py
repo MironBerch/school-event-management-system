@@ -248,3 +248,36 @@ def get_participant_by_id(id: int) -> Participant:
         return Participant.objects.get(id=id)
     except Participant.DoesNotExist:
         return None
+
+
+def get_event_participants(event):
+    return Participant.objects.filter(event=event)
+
+
+def get_event_teams(event):
+    return Team.objects.filter(event=event)
+
+
+def get_team_participants_fio_string(team):
+    participants = team.participants.all()
+    participant_names = [f'{participant.user.full_name}' for participant in participants]
+    participants_string = ', '.join(participant_names)
+    return participants_string
+
+
+def get_team_participants_email_string(team):
+    participants = team.participants.all()
+    participant_names = [f'{participant.user.email}' for participant in participants]
+    participants_string = ' '.join(participant_names)
+    return participants_string
+
+
+def get_team_participants_phone_number_string(team):
+    participants = team.participants.all()
+    participant_names = [f'{participant.user.profile.phone_number}' for participant in participants]
+    participants_string = ' '.join(participant_names)
+    return participants_string
+
+
+def get_team_participants(team):
+    return team.participants.all()
