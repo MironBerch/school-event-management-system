@@ -1,3 +1,4 @@
+from os import environ
 from typing import Optional, Union
 
 from django.contrib.auth.models import Group
@@ -168,3 +169,17 @@ def get_user_by_id(id: int) -> User:
         User.objects.get(id=id)
     except User.DoesNotExist:
         return None
+
+
+def set_profile_values_after_user_registration(
+        profile: Profile,
+        phone_number,
+        school,
+        year_of_study,
+):
+    profile.phone_number = phone_number
+    if school != environ.get('SCHOOL_NAME'):
+        profile.from_current_school = False
+    profile.school = school
+    profile.year_of_study = year_of_study
+    profile.save()

@@ -1,6 +1,7 @@
 from os import environ
 
 from bootstrap_datepicker_plus.widgets import DatePickerInput
+from phonenumber_field.formfields import PhoneNumberField
 
 from django import forms
 from django.contrib.auth import password_validation
@@ -13,6 +14,7 @@ from django.contrib.auth.forms import (
     UserCreationForm,
 )
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -22,6 +24,47 @@ from accounts.tasks import send_password_reset_code
 
 class SignUpForm(UserCreationForm):
     """Форма для регистрации/создания нового аккаунта."""
+
+    YEAR_CHOICES = [
+        (None, '-----'),
+        (None, 'Не обучаюсь в школе'),
+        (1, '1-й класс'),
+        (2, '2-й класс'),
+        (3, '3-й класс'),
+        (4, '4-й класс'),
+        (5, '5-й класс'),
+        (6, '6-й класс'),
+        (7, '7-й класс'),
+        (8, '8-й класс'),
+        (9, '9-й класс'),
+        (10, '10-й класс'),
+        (11, '11-й класс'),
+    ]
+
+    phone_regex = RegexValidator(
+        regex=r'^\+?[0-9]{7,15}$',
+        message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
+    )
+
+    phone_number = PhoneNumberField(
+        label='Номер телефона*',
+        validators=[phone_regex],
+    )
+
+    school = forms.CharField(
+        label=_('Школа'),
+        required=False,
+        max_length=255,
+        initial=environ.get('SCHOOL_NAME'),
+    )
+
+    year_of_study = forms.IntegerField(
+        label='Год обучения*',
+        min_value=1,
+        max_value=11,
+        widget=forms.Select(choices=YEAR_CHOICES),
+        required=False,
+    )
 
     email = forms.EmailField(
         widget=forms.EmailInput(
@@ -81,10 +124,13 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = (
             'email',
+            'phone_number',
             'surname',
             'name',
             'patronymic',
             'role',
+            'school',
+            'year_of_study',
             'password1',
             'password2',
         )
@@ -95,6 +141,7 @@ class SignUpForm(UserCreationForm):
         self.fields['name'].label = '*Имя'
         self.fields['surname'].label = '*Фамилия'
         self.fields['patronymic'].label = 'Отчество'
+        self.fields['role'].label = '*Роль'
         self.fields['password1'].label = '*Пароль'
         self.fields['password2'].label = '*Подтверждение пароля'
 
@@ -105,6 +152,14 @@ class SignUpForm(UserCreationForm):
                 _('Пользователь с такой почтой уже существует.'),
             )
         return email
+
+    def clean_year_of_study(self):
+        year_of_study = self.cleaned_data.get('year_of_study')
+        if year_of_study is None and year_of_study == '-----':
+            raise forms.ValidationError(
+                _('Пожалуйста, выберите другой вариант.'),
+            )
+        return year_of_study
 
 
 class AuthenticationForm(AuthenticationForm):

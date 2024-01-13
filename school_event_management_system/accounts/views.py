@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
     LoginView,
@@ -37,6 +38,7 @@ from accounts.models import User
 from accounts.services import (
     get_user_from_uid,
     send_verification_link,
+    set_profile_values_after_user_registration,
     update_user_email_confirmation_status,
     update_user_profile_year_of_study,
 )
@@ -65,11 +67,22 @@ class SignUpView(
 
         if form.is_valid():
             user = form.save()
-            request.session.set_expiry(0)
+            login(request, user)
             send_verification_link(
                 get_current_site(request).domain,
                 request.scheme,
                 user,
+            )
+            set_profile_values_after_user_registration(
+                profile=user.profile,
+                phone_number=form.cleaned_data['phone_number'],
+                school=form.cleaned_data['school'],
+                year_of_study=form.cleaned_data['year_of_study'],
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                EMAIL_SENT_SUCCESSFULLY_RESPONSE_MESSAGE,
             )
             return redirect('events_list')
         return self.render_to_response(

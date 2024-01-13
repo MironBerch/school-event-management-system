@@ -116,6 +116,7 @@ class Profile(models.Model):
         default=environ.get('SCHOOL_NAME'),
     )
     YEAR_CHOICES = [
+        (None, 'Не обучаюсь в школе'),
         (1, '1-й класс'),
         (2, '2-й класс'),
         (3, '3-й класс'),
