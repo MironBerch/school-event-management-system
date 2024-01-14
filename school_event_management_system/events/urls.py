@@ -12,6 +12,7 @@ from events.views import (
     ParticipantEventsView,
     RegisterOnEventView,
     SupervisorEventsView,
+    export_event_participants,
 )
 
 urlpatterns = [
@@ -66,7 +67,11 @@ urlpatterns = [
         ),
         name='event_solution',
     ),
-
+    path(
+        route='event/<slug:slug>/export_participants/',
+        view=export_event_participants,
+        name='export_event_participants',
+    ),
     # diplomas
     path(
         route='diplomas/',

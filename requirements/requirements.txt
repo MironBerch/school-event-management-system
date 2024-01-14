@@ -52,12 +52,16 @@ django-model-utils==4.3.1
     # via -r requirements.in
 django-phonenumber-field==7.2.0
     # via -r requirements.in
+et-xmlfile==1.1.0
+    # via openpyxl
 faker==20.1.0
     # via -r requirements.in
 gunicorn==21.2.0
     # via -r requirements.in
 kombu==5.3.4
     # via celery
+openpyxl==3.1.2
+    # via -r requirements.in
 packaging==23.2
     # via gunicorn
 phonenumbers==8.13.25

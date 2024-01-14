@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.db.models import QuerySet
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from events.models import Event, EventDiplomas, Participant, Solution, Task, Team
 
@@ -16,6 +18,7 @@ class EventAdmin(admin.ModelAdmin):
         'date_of_starting_event',
         'published',
         'archived',
+        'get_event_participants_link',
     )
     search_fields = (
         'name',
@@ -36,6 +39,7 @@ class EventAdmin(admin.ModelAdmin):
         'set_published',
         'set_archived',
     )
+    readonly_fields = ('get_event_participants_link', )
 
     fieldsets = (
         (
@@ -81,6 +85,14 @@ class EventAdmin(admin.ModelAdmin):
                 ),
             },
         ),
+        (
+            'Списки участников',
+            {
+                'fields': (
+                    'get_event_participants_link',
+                ),
+            },
+        ),
     )
 
     @admin.action(description='Опубликовать мероприятия')
@@ -106,6 +118,16 @@ class EventAdmin(admin.ModelAdmin):
             request,
             f'В архив отправлено {count} {events_word}',
         )
+
+    def get_event_participants_link(self, obj: Event):
+        if obj.slug:
+            return mark_safe(
+                f"""<a href="{
+                    reverse('export_event_participants', args=(obj.slug, ))
+                }">Скачать списки участников</a>""",
+            )
+        return ""
+    get_event_participants_link.short_description = 'Ссылка на скачивание списков участников'
 
 
 @admin.register(Participant)

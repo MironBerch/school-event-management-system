@@ -6,7 +6,7 @@ import qrcode
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import View
@@ -48,6 +48,7 @@ from events.services import (
     join_event,
     join_team,
 )
+from events.utils import export_event_to_excel
 
 
 class EventListView(
@@ -92,21 +93,26 @@ class EventDetailView(
 
     def get(self, request, slug):
         event = get_event_by_slug(slug=slug)
-        teams = get_teams_with_supervisor(
-            event=event,
-            supervisor=request.user,
-        )
-        participants = get_participants_with_supervisor(
-            event=event,
-            supervisor=request.user,
-        )
+        user_participation_of_event = False
+        teams = None
+        participants = None
+        if request.user.is_authenticated:
+            teams = get_teams_with_supervisor(
+                event=event,
+                supervisor=request.user,
+            )
+            participants = get_participants_with_supervisor(
+                event=event,
+                supervisor=request.user,
+            )
+            user_participation_of_event = is_user_participation_of_event(
+                event=event,
+                user=request.user,
+            )
         return self.render_to_response(
             context={
                 'event': event,
-                'is_user_participation_of_event': is_user_participation_of_event(
-                    event=event,
-                    user=request.user,
-                ),
+                'is_user_participation_of_event': user_participation_of_event,
                 'teams': teams,
                 'participants': participants,
             },
@@ -123,14 +129,22 @@ class EventQRCodeView(
 
     def get(self, request, slug):
         event = get_event_by_slug(slug=slug)
-        teams = get_teams_with_supervisor(
-            event=event,
-            supervisor=request.user,
-        )
-        participants = get_participants_with_supervisor(
-            event=event,
-            supervisor=request.user,
-        )
+        user_participation_of_event = False
+        teams = None
+        participants = None
+        if request.user.is_authenticated:
+            teams = get_teams_with_supervisor(
+                event=event,
+                supervisor=request.user,
+            )
+            participants = get_participants_with_supervisor(
+                event=event,
+                supervisor=request.user,
+            )
+            user_participation_of_event = is_user_participation_of_event(
+                event=event,
+                user=request.user,
+            )
         qr = qrcode.QRCode(
             version=2,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -148,10 +162,7 @@ class EventQRCodeView(
         return self.render_to_response(
             context={
                 'event': event,
-                'is_user_participation_of_event': is_user_participation_of_event(
-                    event=event,
-                    user=request.user,
-                ),
+                'is_user_participation_of_event': user_participation_of_event,
                 'qr_code': qr_code,
                 'teams': teams,
                 'participants': participants,
@@ -841,3 +852,24 @@ class SupervisorEventsView(
                 'events': get_events_where_user_are_supervisor(user=request.user),
             }
         )
+
+
+def export_event_participants(request, slug):
+    if not request.user.is_superuser and not request.user.is_staff:
+        return HttpResponse('У вас нет доступа', status=302)
+    try:
+        event = Event.objects.get(slug=slug)
+    except Event.DoesNotExist:
+        return HttpResponse('Мероприятие не найдено', status=404)
+
+    export_event_to_excel(event)
+
+    file_path = f'media/event_{event.id}.xlsx'
+    with open(file_path, 'rb') as excel_file:
+        response = HttpResponse(excel_file.read())
+        response['Content-Disposition'] = \
+            f'attachment; filename={event.slug}_spiski_uchastnikov.xlsx'
+        response['Content-Type'] = \
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+    return response

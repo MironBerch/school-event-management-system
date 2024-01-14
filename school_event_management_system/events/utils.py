@@ -73,10 +73,10 @@ def create_workbook_for_individual_event(event):
                 )
             if letter_string[index] == 'H':
                 ws[cell] = str(
-                    get_participant_solution(participant),
+                    get_participant_solution(event=event, participant=participant),
                 )
 
-    wb.save(f'media//event_{event.id}.xlsx')
+    wb.save(f'media/event_{event.id}.xlsx')
 
 
 def create_workbook_for_team_event(event):
@@ -87,8 +87,8 @@ def create_workbook_for_team_event(event):
 
     ws['A1'] = 'Название команды'
     ws['B1'] = 'Название класса'
-    ws['C1'] = 'ФИО учеников'
-    ws['D1'] = 'Школа учеников'
+    ws['C1'] = 'Школа учеников'
+    ws['D1'] = 'ФИО учеников'
     ws['E1'] = 'Почты учеников'
     ws['F1'] = 'Телефоны учеников'
     ws['G1'] = 'ФИО руководителя'
@@ -147,4 +147,4 @@ def create_workbook_for_team_event(event):
                     get_team_solution(event=event, team=team),
                 )
 
-    wb.save(f'media//event_{event.id}.xlsx')
+    wb.save(f'media/event_{event.id}.xlsx')
