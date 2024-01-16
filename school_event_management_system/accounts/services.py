@@ -120,7 +120,10 @@ def update_user_email_confirmation_status(user: User, is_email_confirmed: bool) 
 
 
 def get_user_by_fio(fio: str) -> User | None:
-    fio_list = ' '.join(fio.strip().split()).split(' ')
+    try:
+        fio_list = ' '.join(fio.strip().split()).split(' ')
+    except AttributeError:
+        return None
     if len(fio_list) < 2:
         return None
     try:

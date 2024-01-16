@@ -1,6 +1,7 @@
 from ckeditor_uploader.fields import RichTextUploadingField
+from phonenumber_field.modelfields import PhoneNumberField
 
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -172,6 +173,27 @@ class Team(models.Model):
         User,
         verbose_name=_('руководитель'),
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    supervisor_fio = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+    supervisor_phone_number = PhoneNumberField(
+        verbose_name=_('номер телефона руководителя'),
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r'^\+?[0-9]{7,15}$',
+                message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
+            )
+        ]
+    )
+    supervisor_email = models.EmailField(
+        verbose_name=_('почта руководителя'),
+        max_length=60,
+        blank=True,
     )
     name = models.CharField(
         verbose_name=_('название команды'),
@@ -219,6 +241,25 @@ class Participant(models.Model):
         null=True,
         blank=True,
         related_name='supervised_participants',
+    )
+    supervisor_fio = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+    supervisor_phone_number = PhoneNumberField(
+        verbose_name=_('номер телефона руководителя'),
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r'^\+?[0-9]{7,15}$',
+                message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
+            )
+        ]
+    )
+    supervisor_email = models.EmailField(
+        verbose_name=_('почта руководителя'),
+        max_length=60,
+        blank=True,
     )
 
     class Meta:

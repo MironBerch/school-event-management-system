@@ -1,4 +1,7 @@
+from phonenumber_field.formfields import PhoneNumberField
+
 from django import forms
+from django.core.validators import RegexValidator
 
 from accounts.services import get_user_by_fio
 from events.models import Solution
@@ -70,20 +73,67 @@ class ParticipantForm(forms.Form):
 
 
 class SupervisorForm(forms.Form):
+    phone_regex = RegexValidator(
+        regex=r'^\+?[0-9]{7,15}$',
+        message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
+    )
     fio = forms.CharField(
         max_length=255,
         label='ФИО руководителя*',
     )
+    phone_number = PhoneNumberField(
+        label='Номер телефона руководителя',
+        validators=[phone_regex],
+        required=False,
+    )
+    email = forms.EmailField(
+        label='Почта руководителя',
+        widget=forms.EmailInput(),
+        required=False,
+    )
+
+    def clean_email(self):
+        fio = self.cleaned_data.get('fio')
+        email = self.cleaned_data.get('email')
+        user = get_user_by_fio(fio)
+        if not user and not email:
+            raise forms.ValidationError(
+                'Руководитель с таким ФИО не зарегистрирован в системе. \
+                Напишите почту руководителя.'
+            )
+        return email
+
+    def clean_phone_number(self):
+        fio = self.cleaned_data.get('fio')
+        phone_number = self.cleaned_data.get('phone_number')
+        user = get_user_by_fio(fio)
+        if not user and not phone_number:
+            raise forms.ValidationError(
+                'Руководитель с таким ФИО не зарегистрирован в системе. \
+                Напишите номер телефона руководителя.'
+            )
+        return phone_number
 
     def clean_fio(self):
         fio = self.cleaned_data.get('fio')
+        email = self.cleaned_data.get('email')
+        phone_number = self.cleaned_data.get('phone_number')
         user = get_user_by_fio(fio)
-        if not user:
-            raise forms.ValidationError('Нет пользователя с таким ФИО')
-        else:
-            if user.role == 'ученик':
-                raise forms.ValidationError('Пользователь не должен являться учеником')
+        if not user and phone_number and email:
+            return fio
+        if user and user.role == 'ученик':
+            raise forms.ValidationError('Пользователь не должен являться учеником')
         return fio
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fio = cleaned_data.get('fio')
+        email = cleaned_data.get('email')
+        phone_number = cleaned_data.get('phone_number')
+        user = get_user_by_fio(fio)
+        if not user and email and phone_number:
+            return cleaned_data
+        return cleaned_data
 
 
 class TeamParticipantsForm(forms.Form):
