@@ -24,17 +24,33 @@ def get_event_by_slug(slug: int) -> Event:
 
 
 def create_team(
+        supervisor: User | None,
+        supervisor_fio: str | None,
+        supervisor_email: str | None,
+        supervisor_phone_number: str | None,
         name: str,
         event: Event,
-        supervisor: User,
         school_class: str = '',
 ) -> Team:
-    return Team.objects.create(
-        name=name,
-        event=event,
-        supervisor=supervisor,
-        school_class=school_class,
-    )
+    if supervisor:
+        return Team.objects.create(
+            name=name,
+            event=event,
+            supervisor=supervisor,
+            school_class=school_class,
+            supervisor_fio=supervisor.full_name,
+            supervisor_email=supervisor.email,
+            supervisor_phone_number=supervisor.profile.phone_number,
+        )
+    else:
+        return Team.objects.create(
+            name=name,
+            event=event,
+            supervisor_fio=supervisor_fio,
+            supervisor_email=supervisor_email,
+            supervisor_phone_number=supervisor_phone_number,
+            school_class=school_class,
+        )
 
 
 def join_team(
@@ -50,15 +66,31 @@ def join_team(
 
 
 def join_event(
+        supervisor_fio: str | None,
+        supervisor_email: str | None,
+        supervisor_phone_number: str | None,
+        supervisor: User | None,
         user: User,
-        supervisor: User,
         event: Event,
 ) -> Participant:
-    return Participant.objects.create(
-        event=event,
-        user=user,
-        supervisor=supervisor,
-    )
+    if supervisor:
+        return Participant.objects.create(
+            event=event,
+            user=user,
+            supervisor=supervisor,
+            supervisor_fio=supervisor.full_name,
+            supervisor_email=supervisor.email,
+            supervisor_phone_number=supervisor.profile.phone_number,
+        )
+    else:
+        return Participant.objects.create(
+            event=event,
+            user=user,
+            supervisor=None,
+            supervisor_fio=supervisor_fio,
+            supervisor_email=supervisor_email,
+            supervisor_phone_number=supervisor_phone_number,
+        )
 
 
 def get_user_diplomas(user: User) -> QuerySet[EventDiplomas]:
@@ -128,19 +160,43 @@ def get_participant_solution(
 
 
 def change_participant_supervisor(
+        supervisor_fio: str | None,
+        supervisor_email: str | None,
+        supervisor_phone_number: str | None,
+        supervisor: User | None,
         participant: Participant,
-        supervisor: User,
 ) -> Participant:
-    participant.supervisor = supervisor
+    if supervisor:
+        participant.supervisor = supervisor
+        participant.supervisor_fio = supervisor.full_name
+        participant.supervisor_email = supervisor.email
+        participant.supervisor_phone_number = supervisor.profile.phone_number
+    else:
+        participant.supervisor = None
+        participant.supervisor_fio = supervisor_fio
+        participant.supervisor_email = supervisor_email
+        participant.supervisor_phone_number = supervisor_phone_number
     participant.save()
     return participant
 
 
 def change_team_supervisor(
+        supervisor_fio: str | None,
+        supervisor_email: str | None,
+        supervisor_phone_number: str | None,
+        supervisor: User | None,
         team: Team,
-        supervisor: User,
 ) -> Team:
-    team.supervisor = supervisor
+    if supervisor:
+        team.supervisor = supervisor
+        team.supervisor_fio = supervisor.full_name
+        team.supervisor_email = supervisor.email
+        team.supervisor_phone_number = supervisor.profile.phone_number
+    else:
+        team.supervisor = None
+        team.supervisor_fio = supervisor_fio
+        team.supervisor_email = supervisor_email
+        team.supervisor_phone_number = supervisor_phone_number
     team.save()
     return team
 

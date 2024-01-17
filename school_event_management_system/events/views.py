@@ -233,11 +233,22 @@ class RegisterOnEventView(
     def post(self, request, slug):
         if self.event.type == 'Индивидуальное':
             if self.supervisor_form.is_valid() and self.participant_form.is_valid():
+                supervisor = get_user_by_fio(fio=self.supervisor_form.cleaned_data['fio'])
                 if request.user.role == 'ученик':
                     join_event(
                         user=request.user,
-                        supervisor=get_user_by_fio(
-                            fio=self.supervisor_form.cleaned_data['fio'],
+                        supervisor=supervisor,
+                        supervisor_email=(
+                            supervisor.email if supervisor else self
+                            .supervisor_form.cleaned_data['email'],
+                        ),
+                        supervisor_fio=(
+                            supervisor.full_name if supervisor else self
+                            .supervisor_form.cleaned_data['fio'],
+                        ),
+                        supervisor_phone_number=(
+                            supervisor.profile.phone_number if supervisor else self
+                            .supervisor_form.cleaned_data['phone_number'],
                         ),
                         event=self.event,
                     )
@@ -246,8 +257,18 @@ class RegisterOnEventView(
                         user=get_user_by_fio(
                             fio=self.participant_form.cleaned_data['participant_fio'],
                         ),
-                        supervisor=get_user_by_fio(
-                            fio=self.supervisor_form.cleaned_data['fio'],
+                        supervisor=supervisor,
+                        supervisor_email=(
+                            supervisor.email if supervisor else self
+                            .supervisor_form.cleaned_data['email'],
+                        ),
+                        supervisor_fio=(
+                            supervisor.full_name if supervisor else self
+                            .supervisor_form.cleaned_data['fio'],
+                        ),
+                        supervisor_phone_number=(
+                            supervisor.profile.phone_number if supervisor else self
+                            .supervisor_form.cleaned_data['phone_number'],
                         ),
                         event=self.event,
                     )
@@ -263,11 +284,22 @@ class RegisterOnEventView(
                 self.team_form.is_valid() and
                 self.supervisor_form.is_valid()
             ):
+                supervisor = get_user_by_fio(fio=self.supervisor_form.cleaned_data['fio'])
                 team = create_team(
                     event=self.event,
                     name=self.team_form.cleaned_data['name'],
-                    supervisor=get_user_by_fio(
-                        fio=self.supervisor_form.cleaned_data['fio'],
+                    supervisor=supervisor,
+                    supervisor_email=(
+                        supervisor.email if supervisor else self
+                        .supervisor_form.cleaned_data['email'],
+                    ),
+                    supervisor_fio=(
+                        supervisor.full_name if supervisor else self
+                        .supervisor_form.cleaned_data['fio'],
+                    ),
+                    supervisor_phone_number=(
+                        supervisor.profile.phone_number if supervisor else self.
+                        supervisor_form.cleaned_data['phone_number'],
                     ),
                 )
                 for field_name, field in self.team_participants_form.fields.items():
@@ -295,11 +327,22 @@ class RegisterOnEventView(
                 self.team_form.is_valid() and
                 self.supervisor_form.is_valid()
             ):
+                supervisor = get_user_by_fio(fio=self.supervisor_form.cleaned_data['fio'])
                 team = create_team(
                     event=self.event,
                     name=self.team_form.cleaned_data['name'],
-                    supervisor=get_user_by_fio(
-                        fio=self.supervisor_form.cleaned_data['fio'],
+                    supervisor=supervisor,
+                    supervisor_email=(
+                        supervisor.email if supervisor else self
+                        .supervisor_form.cleaned_data['email'],
+                    ),
+                    supervisor_fio=(
+                        supervisor.full_name if supervisor else self
+                        .supervisor_form.cleaned_data['fio'],
+                    ),
+                    supervisor_phone_number=(
+                        supervisor.profile.phone_number if supervisor else self
+                        .supervisor_form.cleaned_data['phone_number'],
                     ),
                     school_class=self.team_form.cleaned_data['school_class'],
                 )
@@ -410,12 +453,20 @@ class EditParticipantEventView(
                 )
                 self.supervisor_form = SupervisorForm(
                     data=request.POST or None,
-                    initial={'fio': self.participant.team.supervisor.full_name},
+                    initial={
+                        'fio': self.participant.team.supervisor_fio,
+                        'email': self.participant.team.supervisor_email,
+                        'phone_number': self.participant.team.supervisor_phone_number,
+                    },
                 )
             else:
                 self.supervisor_form = SupervisorForm(
                     data=request.POST or None,
-                    initial={'fio': self.participant.supervisor.full_name},
+                    initial={
+                        'fio': self.participant.supervisor_fio,
+                        'email': self.participant.supervisor_email,
+                        'phone_number': self.participant.supervisor_phone_number,
+                    },
                 )
         else:
             if self.team_id or self.participant_id:
@@ -437,12 +488,20 @@ class EditParticipantEventView(
                     )
                     self.supervisor_form = SupervisorForm(
                         data=request.POST or None,
-                        initial={'fio': self.team.supervisor.full_name},
+                        initial={
+                            'fio': self.team.supervisor_fio,
+                            'email': self.team.supervisor_email,
+                            'phone_number': self.team.supervisor_phone_number,
+                        },
                     )
                 else:
                     self.supervisor_form = SupervisorForm(
                         data=request.POST or None,
-                        initial={'fio': self.participant.supervisor.full_name},
+                        initial={
+                            'fio': self.participant.supervisor_fio,
+                            'email': self.participant.supervisor_email,
+                            'phone_number': self.participant.supervisor_phone_number,
+                        },
                     )
         if is_user_participation_of_event:
             self.participant_form = ParticipantForm(
@@ -482,10 +541,21 @@ class EditParticipantEventView(
                         self.supervisor_form.cleaned_data['fio'] !=
                         self.supervisor_form.initial.get('fio')
                     ):
+                        supervisor = get_user_by_fio(fio=self.supervisor_form.cleaned_data['fio'])
                         change_participant_supervisor(
                             participant=self.participant,
-                            supervisor=get_user_by_fio(
-                                fio=self.supervisor_form.cleaned_data['fio'],
+                            supervisor=supervisor,
+                            supervisor_email=(
+                                supervisor.email if supervisor else self
+                                .supervisor_form.cleaned_data['email'],
+                            ),
+                            supervisor_fio=(
+                                supervisor.full_name if supervisor else self.
+                                supervisor_form.cleaned_data['fio'],
+                            ),
+                            supervisor_phone_number=(
+                                supervisor.profile.phone_number if supervisor else self.
+                                supervisor_form.cleaned_data['phone_number'],
                             ),
                         )
             elif self.event.type == 'Командное':
@@ -498,10 +568,21 @@ class EditParticipantEventView(
                         self.supervisor_form.cleaned_data['fio'] !=
                         self.supervisor_form.initial.get('fio')
                     ):
+                        supervisor = get_user_by_fio(fio=self.supervisor_form.cleaned_data['fio'])
                         change_team_supervisor(
                             team=self.participant.team,
-                            supervisor=get_user_by_fio(
-                                fio=self.supervisor_form.cleaned_data['fio'],
+                            supervisor=supervisor,
+                            supervisor_email=(
+                                supervisor.email if supervisor else self
+                                .supervisor_form.cleaned_data['email'],
+                            ),
+                            supervisor_fio=(
+                                supervisor.full_name if supervisor else self
+                                .supervisor_form.cleaned_data['fio'],
+                            ),
+                            supervisor_phone_number=(
+                                supervisor.profile.phone_number if supervisor else self
+                                .supervisor_form.cleaned_data['phone_number'],
                             ),
                         )
                     if (
@@ -534,10 +615,21 @@ class EditParticipantEventView(
                         self.supervisor_form.cleaned_data['fio'] !=
                         self.supervisor_form.initial.get('fio')
                     ):
+                        supervisor = get_user_by_fio(fio=self.supervisor_form.cleaned_data['fio'])
                         change_team_supervisor(
                             team=self.participant.team,
-                            supervisor=get_user_by_fio(
-                                fio=self.supervisor_form.cleaned_data['fio'],
+                            supervisor=supervisor,
+                            supervisor_email=(
+                                supervisor.email if supervisor else self
+                                .supervisor_form.cleaned_data['email'],
+                            ),
+                            supervisor_fio=(
+                                supervisor.full_name if supervisor else self
+                                .supervisor_form.cleaned_data['fio'],
+                            ),
+                            supervisor_phone_number=(
+                                supervisor.profile.phone_number if supervisor else self
+                                .supervisor_form.cleaned_data['phone_number'],
                             ),
                         )
                     if (

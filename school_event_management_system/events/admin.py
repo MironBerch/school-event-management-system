@@ -136,13 +136,14 @@ class ParticipantAdmin(admin.ModelAdmin):
         'event',
         'user',
         'team',
-        'supervisor',
+        'supervisor_fio',
     )
     search_fields = (
         'event__name',
         'user',
         'team__name',
         'supervisor',
+        'supervisor_fio',
     )
     list_filter = (
         'event',
@@ -156,12 +157,14 @@ class TeamAdmin(admin.ModelAdmin):
         'event',
         'name',
         'school_class',
-        'supervisor',
+        'supervisor_fio',
     )
     search_fields = (
         'event__name',
         'school_class',
         'name',
+        'supervisor_fio',
+        'supervisor',
     )
     list_filter = ('event', )
 

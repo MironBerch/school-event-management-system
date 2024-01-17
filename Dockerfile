@@ -9,6 +9,9 @@ ENV PYTHONPATH /app
 # Set working directory
 WORKDIR /app
 
+# Create media directory if it doesn't exist
+RUN mkdir -p /app/school_event_management_system/media
+
 # Copy requirements files
 COPY requirements/requirements.txt requirements.txt
 COPY requirements/requirements.lint.txt requirements.lint.txt

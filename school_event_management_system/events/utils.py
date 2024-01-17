@@ -61,15 +61,15 @@ def create_workbook_for_individual_event(event):
                 )
             if letter_string[index] == 'E':
                 ws[cell] = str(
-                    participant.supervisor.full_name,
+                    participant.supervisor_fio,
                 )
             if letter_string[index] == 'F':
                 ws[cell] = str(
-                    participant.supervisor.email,
+                    participant.supervisor_email,
                 )
             if letter_string[index] == 'G':
                 ws[cell] = str(
-                    participant.supervisor.profile.phone_number,
+                    participant.supervisor_phone_number,
                 )
             if letter_string[index] == 'H':
                 ws[cell] = str(
@@ -132,15 +132,15 @@ def create_workbook_for_team_event(event):
                 )
             if letter_string[index] == 'G':
                 ws[cell] = str(
-                    team.supervisor.full_name,
+                    team.supervisor_fio,
                 )
             if letter_string[index] == 'H':
                 ws[cell] = str(
-                    team.supervisor.email,
+                    team.supervisor_email,
                 )
             if letter_string[index] == 'I':
                 ws[cell] = str(
-                    team.supervisor.profile.phone_number,
+                    team.supervisor_phone_number,
                 )
             if letter_string[index] == 'J':
                 ws[cell] = str(

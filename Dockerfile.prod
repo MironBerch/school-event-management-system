@@ -12,6 +12,9 @@ ENV PYTHONUNBUFFERED 1
 # Copy project files
 COPY . .
 
+# Create media directory if it doesn't exist
+RUN mkdir -p /app/school_event_management_system/media
+
 # Copy requirements files
 COPY requirements/requirements.txt /app/requirements.txt
 

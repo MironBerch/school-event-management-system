@@ -177,6 +177,7 @@ class Team(models.Model):
         blank=True,
     )
     supervisor_fio = models.CharField(
+        verbose_name=_('ФИО руководителя'),
         max_length=255,
         blank=True,
     )
@@ -243,6 +244,7 @@ class Participant(models.Model):
         related_name='supervised_participants',
     )
     supervisor_fio = models.CharField(
+        verbose_name=_('ФИО руководителя'),
         max_length=255,
         blank=True,
     )
