@@ -187,6 +187,8 @@ class RegisterOnEventView(
 
     def dispatch(self, request: HttpRequest, slug, *args, **kwargs):
         self.event = get_event_by_slug(slug=slug)
+        if self.event.status != 'Регистрация открыта':
+            return redirect('event_detail', slug=self.event.slug)
         self.is_user_participation_of_event = is_user_participation_of_event(
             event=self.event,
             user=request.user,
@@ -513,6 +515,12 @@ class EditParticipantEventView(
                 data=request.POST or None,
                 user=self.participant.user,
             )
+        if self.event.status != 'Регистрация открыта':
+            self.supervisor_form.disable_fields()
+            if self.event.type == 'Индивидуальное':
+                self.participant_form.disable_fields()
+            else:
+                self.team_participants_form.disable_fields()
         return super(EditParticipantEventView, self).dispatch(request, slug, *args, **kwargs)
 
     def get(self, request: HttpRequest, slug, *args, **kwargs):
@@ -866,6 +874,8 @@ class EventSolutionView(
             data=request.POST or None,
             instance=self.solution,
         )
+        if self.event.status != 'Регистрация открыта' and self.event.status != 'В процессе':
+            self.solution_form.disable_fields()
         return super(EventSolutionView, self).dispatch(request, slug, *args, **kwargs)
 
     def get(self, request: HttpRequest, slug, *args, **kwargs):

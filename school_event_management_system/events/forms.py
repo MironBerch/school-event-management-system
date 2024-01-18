@@ -71,6 +71,10 @@ class ParticipantForm(forms.Form):
             raise forms.ValidationError('Пользователь должен являться учеником')
         return cleaned_data
 
+    def disable_fields(self):
+        for field_name, field in self.fields.items():
+            field.widget.attrs['disabled'] = True
+
 
 class SupervisorForm(forms.Form):
     phone_regex = RegexValidator(
@@ -135,6 +139,10 @@ class SupervisorForm(forms.Form):
             return cleaned_data
         return cleaned_data
 
+    def disable_fields(self):
+        for field_name, field in self.fields.items():
+            field.widget.attrs['disabled'] = True
+
 
 class TeamParticipantsForm(forms.Form):
     def __init__(
@@ -168,11 +176,19 @@ class TeamParticipantsForm(forms.Form):
                         self.add_error(field_name, 'Пользователь должен являться учеником')
         return cleaned_data
 
+    def disable_fields(self):
+        for field_name, field in self.fields.items():
+            field.widget.attrs['disabled'] = True
+
 
 class SolutionForm(forms.ModelForm):
     class Meta:
         model = Solution
         fields = ('url', )
+
+    def disable_fields(self):
+        for field_name, field in self.fields.items():
+            field.widget.attrs['disabled'] = True
 
 
 class TeamOrParticipantForm(forms.Form):

@@ -15,6 +15,9 @@
                     <li><a href="{% url 'diplomas_list' %}">Дипломы</a></li>
                     <li><a href="{% url 'supervisor_events' %}">Мероприятия в которых я являюсь руководителем</a></li>
                     <li><a href="{% url 'participant_events' %}">Мероприятия в которых я являюсь участником</a></li>
+                    {% if request.user.is_superuser or request.user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">Панель администратора</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

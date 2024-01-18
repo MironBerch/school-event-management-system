@@ -95,6 +95,7 @@ class UserAdmin(UserAdmin):
                     'name',
                     'surname',
                     'patronymic',
+                    'role',
                     'password1',
                     'password2',
                 ),

@@ -103,6 +103,11 @@ class SignUpForm(UserCreationForm):
         required=False,
     )
 
+    role = forms.ChoiceField(
+        choices=User.RoleChoices.choices,
+        initial=User.RoleChoices.STUDENT,
+    )
+
     password1 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
