@@ -64,11 +64,9 @@
                                 {% bootstrap_form team_participants_form %}
                             {% endif %}
                             {% bootstrap_form supervisor_form %}
-                            {% if event.status != 'Регистрация открыта' %}
-                                {% if event.status == 'Регистрация открыта' %}
-                                    <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Изменить анкету</button>
-                                {% endif %}
-                            {% endif %}    
+                            {% if event.status == 'Регистрация открыта' %}
+                                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Изменить анкету</button>
+                            {% endif %}
                         {% endif %}
                     </form>
                 </div>

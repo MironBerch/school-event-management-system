@@ -61,9 +61,9 @@
                         {% csrf_token %}
                         {% if participant_id or team_id or is_user_participation_of_event %}
                             {% bootstrap_form solution_form %}
-                                {% if event.status == 'Регистрация открыта' or event.status == 'В процессе' %}
-                                    <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Отправить ссылку на решение</button>
-                                {% endif %}
+                            {% if event.status == 'Регистрация открыта' or event.status == 'В процессе' %}
+                                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Отправить ссылку на решение</button>
+                            {% endif %}
                         {% endif %}
                     </form>
                 </div>

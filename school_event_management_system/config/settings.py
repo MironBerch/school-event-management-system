@@ -127,6 +127,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+PHONENUMBER_DEFAULT_REGION = 'RU'
+
 
 # Static files (CSS, JavaScript, Images)
 

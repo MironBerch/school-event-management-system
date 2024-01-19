@@ -242,15 +242,15 @@ class RegisterOnEventView(
                         supervisor=supervisor,
                         supervisor_email=(
                             supervisor.email if supervisor else self
-                            .supervisor_form.cleaned_data['email'],
+                            .supervisor_form.cleaned_data['email']
                         ),
                         supervisor_fio=(
                             supervisor.full_name if supervisor else self
-                            .supervisor_form.cleaned_data['fio'],
+                            .supervisor_form.cleaned_data['fio']
                         ),
                         supervisor_phone_number=(
                             supervisor.profile.phone_number if supervisor else self
-                            .supervisor_form.cleaned_data['phone_number'],
+                            .supervisor_form.cleaned_data['phone_number']
                         ),
                         event=self.event,
                     )
@@ -262,15 +262,15 @@ class RegisterOnEventView(
                         supervisor=supervisor,
                         supervisor_email=(
                             supervisor.email if supervisor else self
-                            .supervisor_form.cleaned_data['email'],
+                            .supervisor_form.cleaned_data['email']
                         ),
                         supervisor_fio=(
                             supervisor.full_name if supervisor else self
-                            .supervisor_form.cleaned_data['fio'],
+                            .supervisor_form.cleaned_data['fio']
                         ),
                         supervisor_phone_number=(
                             supervisor.profile.phone_number if supervisor else self
-                            .supervisor_form.cleaned_data['phone_number'],
+                            .supervisor_form.cleaned_data['phone_number']
                         ),
                         event=self.event,
                     )
@@ -293,15 +293,15 @@ class RegisterOnEventView(
                     supervisor=supervisor,
                     supervisor_email=(
                         supervisor.email if supervisor else self
-                        .supervisor_form.cleaned_data['email'],
+                        .supervisor_form.cleaned_data['email']
                     ),
                     supervisor_fio=(
                         supervisor.full_name if supervisor else self
-                        .supervisor_form.cleaned_data['fio'],
+                        .supervisor_form.cleaned_data['fio']
                     ),
                     supervisor_phone_number=(
                         supervisor.profile.phone_number if supervisor else self.
-                        supervisor_form.cleaned_data['phone_number'],
+                        supervisor_form.cleaned_data['phone_number']
                     ),
                 )
                 for field_name, field in self.team_participants_form.fields.items():
@@ -336,15 +336,15 @@ class RegisterOnEventView(
                     supervisor=supervisor,
                     supervisor_email=(
                         supervisor.email if supervisor else self
-                        .supervisor_form.cleaned_data['email'],
+                        .supervisor_form.cleaned_data['email']
                     ),
                     supervisor_fio=(
                         supervisor.full_name if supervisor else self
-                        .supervisor_form.cleaned_data['fio'],
+                        .supervisor_form.cleaned_data['fio']
                     ),
                     supervisor_phone_number=(
                         supervisor.profile.phone_number if supervisor else self
-                        .supervisor_form.cleaned_data['phone_number'],
+                        .supervisor_form.cleaned_data['phone_number']
                     ),
                     school_class=self.team_form.cleaned_data['school_class'],
                 )
@@ -555,15 +555,15 @@ class EditParticipantEventView(
                             supervisor=supervisor,
                             supervisor_email=(
                                 supervisor.email if supervisor else self
-                                .supervisor_form.cleaned_data['email'],
+                                .supervisor_form.cleaned_data['email']
                             ),
                             supervisor_fio=(
                                 supervisor.full_name if supervisor else self.
-                                supervisor_form.cleaned_data['fio'],
+                                supervisor_form.cleaned_data['fio']
                             ),
                             supervisor_phone_number=(
                                 supervisor.profile.phone_number if supervisor else self.
-                                supervisor_form.cleaned_data['phone_number'],
+                                supervisor_form.cleaned_data['phone_number']
                             ),
                         )
             elif self.event.type == 'Командное':
@@ -582,15 +582,15 @@ class EditParticipantEventView(
                             supervisor=supervisor,
                             supervisor_email=(
                                 supervisor.email if supervisor else self
-                                .supervisor_form.cleaned_data['email'],
+                                .supervisor_form.cleaned_data['email']
                             ),
                             supervisor_fio=(
                                 supervisor.full_name if supervisor else self
-                                .supervisor_form.cleaned_data['fio'],
+                                .supervisor_form.cleaned_data['fio']
                             ),
                             supervisor_phone_number=(
                                 supervisor.profile.phone_number if supervisor else self
-                                .supervisor_form.cleaned_data['phone_number'],
+                                .supervisor_form.cleaned_data['phone_number']
                             ),
                         )
                     if (
@@ -629,15 +629,15 @@ class EditParticipantEventView(
                             supervisor=supervisor,
                             supervisor_email=(
                                 supervisor.email if supervisor else self
-                                .supervisor_form.cleaned_data['email'],
+                                .supervisor_form.cleaned_data['email']
                             ),
                             supervisor_fio=(
                                 supervisor.full_name if supervisor else self
-                                .supervisor_form.cleaned_data['fio'],
+                                .supervisor_form.cleaned_data['fio']
                             ),
                             supervisor_phone_number=(
                                 supervisor.profile.phone_number if supervisor else self
-                                .supervisor_form.cleaned_data['phone_number'],
+                                .supervisor_form.cleaned_data['phone_number']
                             ),
                         )
                     if (

@@ -128,16 +128,16 @@ def get_user_by_fio(fio: str) -> User | None:
         return None
     try:
         if len(fio_list) == 3:
-            return User.objects.get(
+            return User.objects.filter(
                 Q(surname=fio_list[0]) &
                 Q(name=fio_list[1]) &
                 Q(patronymic=fio_list[2])
-            )
+            ).first()
         else:
-            return User.objects.get(
+            return User.objects.filter(
                 Q(surname=fio_list[0]) &
                 Q(name=fio_list[1])
-            )
+            ).first()
     except User.DoesNotExist:
         return None
 
