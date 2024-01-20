@@ -310,6 +310,11 @@ class Solution(models.Model):
         null=True,
         blank=True,
     )
+    topic = models.CharField(
+        verbose_name=_('тема проекта'),
+        max_length=255,
+        blank=True,
+    )
     url = models.URLField(
         verbose_name=_('ссылка на файлы'),
         blank=True,
@@ -320,7 +325,7 @@ class Solution(models.Model):
         verbose_name_plural = _('Ссылки на файлы')
 
     def __str__(self):
-        return f'{self.event} - {self.url}'
+        return f'{self.event} - {self.topic} - {self.url}'
 
 
 class Task(models.Model):

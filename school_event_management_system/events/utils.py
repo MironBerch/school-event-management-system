@@ -34,14 +34,15 @@ def create_workbook_for_individual_event(event):
     ws['F1'] = 'Почта руководителя'
     ws['G1'] = 'Телефон руководителя'
     ws['H1'] = 'Ссылка на приложенные файлы'
+    ws['I1'] = 'Тема проекта'
 
-    letter_string = 'ABCDEFGH'
+    letter_string = 'ABCDEFGHI'
     participant_index = 1
     participants = get_event_participants(event=event)
 
     for participant in participants:
         participant_index = participant_index + 1
-        for index in range(8):
+        for index in range(9):
             cell = letter_string[index] + str(participant_index)
             if letter_string[index] == 'A':
                 ws[cell] = str(
@@ -73,7 +74,11 @@ def create_workbook_for_individual_event(event):
                 )
             if letter_string[index] == 'H':
                 ws[cell] = str(
-                    get_participant_solution(event=event, participant=participant),
+                    get_participant_solution(event=event, participant=participant).url,
+                )
+            if letter_string[index] == 'I':
+                ws[cell] = str(
+                    get_participant_solution(event=event, participant=participant).topic,
                 )
 
     wb.save(f'media/event_{event.id}.xlsx')
@@ -95,14 +100,15 @@ def create_workbook_for_team_event(event):
     ws['H1'] = 'Почта руководителя'
     ws['I1'] = 'Телефон руководителя'
     ws['J1'] = 'Ссылка на приложенные файлы'
+    ws['K1'] = 'Тема проекта'
 
-    letter_string = 'ABCDEFGHIJ'
+    letter_string = 'ABCDEFGHIJK'
     team_index = 1
     teams = get_event_teams(event=event)
 
     for team in teams:
         team_index = team_index + 1
-        for index in range(10):
+        for index in range(11):
             cell = letter_string[index] + str(team_index)
             if letter_string[index] == 'A':
                 ws[cell] = str(
@@ -144,7 +150,11 @@ def create_workbook_for_team_event(event):
                 )
             if letter_string[index] == 'J':
                 ws[cell] = str(
-                    get_team_solution(event=event, team=team),
+                    get_team_solution(event=event, team=team).url,
+                )
+            if letter_string[index] == 'K':
+                ws[cell] = str(
+                    get_team_solution(event=event, team=team).topic,
                 )
 
     wb.save(f'media/event_{event.id}.xlsx')

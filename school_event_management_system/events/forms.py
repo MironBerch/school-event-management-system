@@ -184,7 +184,10 @@ class TeamParticipantsForm(forms.Form):
 class SolutionForm(forms.ModelForm):
     class Meta:
         model = Solution
-        fields = ('url', )
+        fields = (
+            'topic',
+            'url',
+        )
 
     def disable_fields(self):
         for field_name, field in self.fields.items():

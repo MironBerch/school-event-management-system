@@ -184,12 +184,14 @@ class SolutionAdmin(admin.ModelAdmin):
         'event',
         'participant',
         'team',
+        'topic',
         'url',
     )
     search_fields = (
         'event__name',
         'participant',
         'team',
+        'topic',
     )
     list_filter = ('event', )
 
