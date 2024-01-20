@@ -6,6 +6,13 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from main.views import BadRequestView, PageNotFoundView, PermissionDeniedView, ServerErrorView
+
+handler400 = BadRequestView.as_view()
+handler403 = PermissionDeniedView.as_view()
+handler404 = PageNotFoundView.as_view()
+handler500 = ServerErrorView.as_view()
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
