@@ -63,6 +63,11 @@ EMAIL_HOST=
 CELERY_BROKER_URL=redis://redis:6379
 ```
 
+- Запустите эту команду - она обновит миграции бд
+```sh
+. scripts/env_setup.sh && . scripts/setup_school_name.sh
+```
+
 - Запустите эту команду - она запустит проект
 ```sh
 docker-compose -f docker-compose.yml -f docker-compose-master.yml up --build -d
