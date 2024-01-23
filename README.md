@@ -1,6 +1,6 @@
 # school-event-management-system
 
-### Example of `.env` file:
+### Пример файла `.env`:
 
 ```dotenv
 ENV=.env
@@ -16,7 +16,7 @@ DB_USER=
 DB_PASSWORD=
 
 # Celery
-CELERY_BROKER_URL=<redis://redis:6379>
+CELERY_BROKER_URL=redis://redis:6379
 
 # SMTP
 EMAIL_HOST=
@@ -25,15 +25,15 @@ EMAIL_HOST_PASSWORD=
 
 ```
 
-### Start project:
+### Запустить проект:
 
-Local:
+В локальной среде:
 ```shell
 docker-compose -f docker-compose-local.yml build
 docker-compose -f docker-compose-local.yml up
 ```
 
-Production:
+В производственной среде:
 ```shell
 docker-compose -f docker-compose-master.yml build
 docker-compose -f docker-compose-master.yml up
