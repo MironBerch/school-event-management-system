@@ -10,7 +10,7 @@
                     <li><a href="{% url 'supervisor_events' %}" class="nav-link px-2">Мои мероприятия</a></li>
                 {% endif %}
             {% else %}
-                <li><a href="#" class="nav-link px-2 link-secondary">{{ school }}</a></li>
+                <li><a href="{% url 'events_list' %}" class="nav-link px-2 link-secondary">{{ school }}</a></li>
             {% endif %}
         </ul>
         <div class="col-md-3 text-end">

@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile.prod
     command: >
       sh -c "cd /home/app/web/school_event_management_system/
+      && mkdir -p media
       && python manage.py migrate --noinput
       && python manage.py collectstatic --noinput
       && gunicorn --reload -c ../configuration/gunicorn_config.py config.wsgi:application"

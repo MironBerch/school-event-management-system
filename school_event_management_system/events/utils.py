@@ -44,6 +44,7 @@ def create_workbook_for_individual_event(event):
         participant_index = participant_index + 1
         for index in range(9):
             cell = letter_string[index] + str(participant_index)
+            solution = get_participant_solution(event=event, participant=participant)
             if letter_string[index] == 'A':
                 ws[cell] = str(
                     participant.user.full_name,
@@ -74,11 +75,11 @@ def create_workbook_for_individual_event(event):
                 )
             if letter_string[index] == 'H':
                 ws[cell] = str(
-                    get_participant_solution(event=event, participant=participant).url,
+                    solution.url if solution else '',
                 )
             if letter_string[index] == 'I':
                 ws[cell] = str(
-                    get_participant_solution(event=event, participant=participant).topic,
+                    solution.topic if solution else '',
                 )
 
     wb.save(f'media/event_{event.id}.xlsx')
@@ -109,6 +110,7 @@ def create_workbook_for_team_event(event):
     for team in teams:
         team_index = team_index + 1
         for index in range(11):
+            solution = get_team_solution(event=event, team=team)
             cell = letter_string[index] + str(team_index)
             if letter_string[index] == 'A':
                 ws[cell] = str(
@@ -150,11 +152,11 @@ def create_workbook_for_team_event(event):
                 )
             if letter_string[index] == 'J':
                 ws[cell] = str(
-                    get_team_solution(event=event, team=team).url,
+                    solution.url if solution else '',
                 )
             if letter_string[index] == 'K':
                 ws[cell] = str(
-                    get_team_solution(event=event, team=team).topic,
+                    solution.topic if solution else '',
                 )
 
     wb.save(f'media/event_{event.id}.xlsx')
