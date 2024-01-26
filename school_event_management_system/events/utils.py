@@ -24,7 +24,7 @@ def create_workbook_for_individual_event(event):
     wb = Workbook()
     ws = wb.active
 
-    ws.title = f'{event.name}'
+    ws.title = f'{event.slug}'
 
     ws['A1'] = 'ФИО ученика'
     ws['B1'] = 'Школа ученика'
@@ -89,7 +89,7 @@ def create_workbook_for_team_event(event):
     wb = Workbook()
     ws = wb.active
 
-    ws.title = f'{event.name}'
+    ws.title = f'{event.slug}'
 
     ws['A1'] = 'Название команды'
     ws['B1'] = 'Название класса'

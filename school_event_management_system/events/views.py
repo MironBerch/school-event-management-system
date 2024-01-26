@@ -62,7 +62,7 @@ class EventListView(
     def get(self, request: HttpRequest, *args, **kwargs):
         return self.render_to_response(
             context={
-                'events': get_published_not_archived_events(),
+                'events': get_published_not_archived_events().order_by('date_of_starting_event'),
             },
         )
 

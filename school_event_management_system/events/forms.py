@@ -186,6 +186,7 @@ class SolutionForm(forms.ModelForm):
         model = Solution
         fields = (
             'topic',
+            'subject',
             'url',
         )
 

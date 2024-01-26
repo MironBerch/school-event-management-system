@@ -310,10 +310,13 @@ class Solution(models.Model):
         null=True,
         blank=True,
     )
+    subject = models.CharField(
+        verbose_name=_('Предмет'),
+        max_length=255,
+    )
     topic = models.CharField(
         verbose_name=_('тема проекта'),
         max_length=255,
-        blank=True,
     )
     url = models.URLField(
         verbose_name=_('ссылка на файлы'),
