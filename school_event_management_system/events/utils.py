@@ -35,14 +35,15 @@ def create_workbook_for_individual_event(event):
     ws['G1'] = 'Телефон руководителя'
     ws['H1'] = 'Ссылка на приложенные файлы'
     ws['I1'] = 'Тема проекта'
+    ws['J1'] = 'Предмет'
 
-    letter_string = 'ABCDEFGHI'
+    letter_string = 'ABCDEFGHIJ'
     participant_index = 1
     participants = get_event_participants(event=event)
 
     for participant in participants:
         participant_index = participant_index + 1
-        for index in range(9):
+        for index in range(10):
             cell = letter_string[index] + str(participant_index)
             solution = get_participant_solution(event=event, participant=participant)
             if letter_string[index] == 'A':
@@ -81,6 +82,10 @@ def create_workbook_for_individual_event(event):
                 ws[cell] = str(
                     solution.topic if solution else '',
                 )
+            if letter_string[index] == 'J':
+                ws[cell] = str(
+                    solution.subject if solution else '',
+                )
 
     wb.save(f'media/event_{event.id}.xlsx')
 
@@ -102,14 +107,15 @@ def create_workbook_for_team_event(event):
     ws['I1'] = 'Телефон руководителя'
     ws['J1'] = 'Ссылка на приложенные файлы'
     ws['K1'] = 'Тема проекта'
+    ws['L1'] = 'Предмет'
 
-    letter_string = 'ABCDEFGHIJK'
+    letter_string = 'ABCDEFGHIJKL'
     team_index = 1
     teams = get_event_teams(event=event)
 
     for team in teams:
         team_index = team_index + 1
-        for index in range(11):
+        for index in range(12):
             solution = get_team_solution(event=event, team=team)
             cell = letter_string[index] + str(team_index)
             if letter_string[index] == 'A':
@@ -157,6 +163,10 @@ def create_workbook_for_team_event(event):
             if letter_string[index] == 'K':
                 ws[cell] = str(
                     solution.topic if solution else '',
+                )
+            if letter_string[index] == 'L':
+                ws[cell] = str(
+                    solution.subject if solution else '',
                 )
 
     wb.save(f'media/event_{event.id}.xlsx')
