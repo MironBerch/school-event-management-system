@@ -16,10 +16,8 @@
                         <a class="nav-item nav-link link-body-emphasis" href="{% url 'event_detail' slug=event.slug %}">О событии</a>
                         {% if is_user_participation_of_event or teams or participants %}
                             <a class="nav-item nav-link link-body-emphasis" href="{% url 'edit_participant_event' slug=event.slug %}">Анкета</a>
-                            {% if event.task_set.exists %}
-                                <a class="nav-item nav-link" href="#">Задачи и решение</a>
-                            {% elif not event.task_set.exists and event.need_presentation %}
-                                <a class="nav-item nav-link" href="#">Файлы для выступления</a>
+                            {% if event.task_set.exists or event.need_presentation %}
+                                <a class="nav-item nav-link" href="#">Прикрепить работу</a>
                             {% endif %}
                         {% endif %}
                         {% if event.regulations %}
@@ -62,7 +60,7 @@
                         {% if participant_id or team_id or is_user_participation_of_event %}
                             {% bootstrap_form solution_form %}
                             {% if event.status == 'Регистрация открыта' or event.status == 'В процессе' %}
-                                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Отправить ссылку на решение</button>
+                                <button class="btn btn-primary w-100 py-2" style="margin-top: 10px;" type="submit">Отправить</button>
                             {% endif %}
                         {% endif %}
                     </form>

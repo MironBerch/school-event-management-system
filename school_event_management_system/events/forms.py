@@ -187,6 +187,7 @@ class SolutionForm(forms.ModelForm):
         fields = (
             'topic',
             'subject',
+            'theses',
             'url',
         )
 

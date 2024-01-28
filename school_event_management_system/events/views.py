@@ -280,7 +280,10 @@ class RegisterOnEventView(
                     'Участник успешно зарегистрирован на мероприятии',
                 )
                 return redirect('edit_participant_event', slug=self.event.slug)
-        elif self.event.type == 'Командное':
+        elif (
+            self.event.type == 'Командное' or
+            self.event.type == 'Индивидуальное, коллективное'
+        ):
             if (
                 self.team_participants_form.is_valid() and
                 self.team_form.is_valid() and
@@ -566,7 +569,10 @@ class EditParticipantEventView(
                                 supervisor_form.cleaned_data['phone_number']
                             ),
                         )
-            elif self.event.type == 'Командное':
+            elif (
+                self.event.type == 'Командное' or
+                self.event.type == 'Индивидуальное, коллективное'
+            ):
                 if (
                     self.team_participants_form.is_valid() and
                     self.team_form.is_valid() and
@@ -681,7 +687,10 @@ class EditParticipantEventView(
                                 fio=self.supervisor_form.cleaned_data['fio'],
                             ),
                         )
-            elif self.event.type == 'Командное':
+            elif (
+                self.event.type == 'Командное' or
+                self.event.type == 'Индивидуальное, коллективное'
+            ):
                 if (
                     self.team_participants_form.is_valid() and
                     self.team_form.is_valid() and
@@ -934,7 +943,9 @@ class ParticipantEventsView(
     def get(self, request: HttpRequest):
         return self.render_to_response(
             context={
-                'events': get_events_where_user_are_participant(user=request.user),
+                'events': get_events_where_user_are_participant(
+                    user=request.user,
+                ).order_by('date_of_starting_event'),
             }
         )
 
@@ -951,7 +962,9 @@ class SupervisorEventsView(
     def get(self, request: HttpRequest):
         return self.render_to_response(
             context={
-                'events': get_events_where_user_are_supervisor(user=request.user),
+                'events': get_events_where_user_are_supervisor(
+                    user=request.user,
+                ).order_by('date_of_starting_event'),
             }
         )
 

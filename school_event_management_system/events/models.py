@@ -31,6 +31,7 @@ class EventStatusChoices(models.TextChoices):
 
 class EventTypeChoices(models.TextChoices):
     INDIVIDUAL = 'Индивидуальное', 'Индивидуальное'
+    INDIVIDUAL_AND_COLLECTIVE = 'Индивидуальное, коллективное', 'Индивидуальное, коллективное'
     TEAM = 'Командное', 'Командное'
     CLASS_TEAMS = 'Командное от классов', 'Командное от классов'
 
@@ -120,7 +121,7 @@ class Event(models.Model):
         choices=EventTypeChoices.choices,
     )
     stage = models.CharField(
-        verbose_name=_('этап мероприятия'),
+        verbose_name=_('уровень мероприятия'),
         blank=True,
         max_length=50,
         choices=EventStageChoices.choices,
@@ -311,8 +312,12 @@ class Solution(models.Model):
         blank=True,
     )
     subject = models.CharField(
-        verbose_name=_('Предмет'),
+        verbose_name=_('предмет'),
         max_length=255,
+    )
+    theses = models.CharField(
+        verbose_name=_('краткие тезисы'),
+        max_length=5120,
     )
     topic = models.CharField(
         verbose_name=_('тема проекта'),
@@ -324,8 +329,8 @@ class Solution(models.Model):
     )
 
     class Meta:
-        verbose_name = _('Ссылка на файлы')
-        verbose_name_plural = _('Ссылки на файлы')
+        verbose_name = _('Работа')
+        verbose_name_plural = _('Работы')
 
     def __str__(self):
         return f'{self.event} - {self.topic} - {self.url}'
