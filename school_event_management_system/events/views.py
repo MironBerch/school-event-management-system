@@ -199,6 +199,7 @@ class RegisterOnEventView(
             data=request.POST or None,
             minimum_number_of_team_members=self.event.minimum_number_of_team_members,
             maximum_number_of_team_members=self.event.maximum_number_of_team_members,
+            need_account=self.event.need_account,
         )
         if self.event.type == 'Командное от классов':
             self.team_form = TeamForm(
@@ -309,17 +310,16 @@ class RegisterOnEventView(
                 )
                 for field_name, field in self.team_participants_form.fields.items():
                     if field_name.startswith('participant_'):
+                        fio = self.team_participants_form.cleaned_data[field_name]
                         user = get_user_by_fio(
-                            fio=self.team_participants_form.cleaned_data[field_name],
+                            fio=fio,
                         )
-                        if user:
-                            join_team(
-                                event=self.event,
-                                user=user,
-                                team=team,
-                            )
-                        else:
-                            pass
+                        join_team(
+                            event=self.event,
+                            user=user,
+                            team=team,
+                            fio=fio,
+                        )
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -353,21 +353,20 @@ class RegisterOnEventView(
                 )
                 for field_name, field in self.team_participants_form.fields.items():
                     if field_name.startswith('participant_'):
+                        fio = self.team_participants_form.cleaned_data[field_name]
                         user = get_user_by_fio(
-                            fio=self.team_participants_form.cleaned_data[field_name],
+                            fio=fio,
                         )
-                        if user:
-                            join_team(
-                                event=self.event,
-                                user=user,
-                                team=team,
-                            )
-                        else:
-                            pass
+                        join_team(
+                            event=self.event,
+                            user=user,
+                            team=team,
+                            fio=fio,
+                        )
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    f'Комманда \'{team.name}\' успешно зарегистрирована на мероприятии',
+                    f'Команда \"{team.name}\" успешно зарегистрирована на мероприятии',
                 )
                 return redirect('edit_participant_event', slug=self.event.slug)
 
@@ -454,6 +453,7 @@ class EditParticipantEventView(
                     data=request.POST or None,
                     minimum_number_of_team_members=self.event.minimum_number_of_team_members,
                     maximum_number_of_team_members=self.event.maximum_number_of_team_members,
+                    need_account=self.event.need_account,
                     initial=create_initial_data_for_team_participants_form(self.participant.team),
                 )
                 self.supervisor_form = SupervisorForm(
@@ -489,6 +489,7 @@ class EditParticipantEventView(
                         data=request.POST or None,
                         minimum_number_of_team_members=self.event.minimum_number_of_team_members,
                         maximum_number_of_team_members=self.event.maximum_number_of_team_members,
+                        need_account=self.event.need_account,
                         initial=create_initial_data_for_team_participants_form(self.team),
                     )
                     self.supervisor_form = SupervisorForm(
@@ -610,15 +611,16 @@ class EditParticipantEventView(
                     disband_team_participants(team=self.participant.team)
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
+                            fio = self.team_participants_form.cleaned_data[field_name]
                             user = get_user_by_fio(
-                                fio=self.team_participants_form.cleaned_data[field_name],
+                                fio=fio,
                             )
-                            if user:
-                                join_team(
-                                    user=user,
-                                    team=self.participant.team,
-                                    event=self.event,
-                                )
+                            join_team(
+                                event=self.event,
+                                user=user,
+                                team=self.participant.team,
+                                fio=fio,
+                            )
             else:
                 if (
                     self.team_participants_form.is_valid() and
@@ -665,15 +667,16 @@ class EditParticipantEventView(
                     disband_team_participants(team=self.participant.team)
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
+                            fio = self.team_participants_form.cleaned_data[field_name]
                             user = get_user_by_fio(
-                                fio=self.team_participants_form.cleaned_data[field_name],
+                                fio=fio,
                             )
-                            if user:
-                                join_team(
-                                    user=user,
-                                    team=self.participant.team,
-                                    event=self.event,
-                                )
+                            join_team(
+                                event=self.event,
+                                user=user,
+                                team=self.participant.team,
+                                fio=fio,
+                            )
         else:
             if self.event.type == 'Индивидуальное':
                 if self.supervisor_form.is_valid():
@@ -717,15 +720,16 @@ class EditParticipantEventView(
                     disband_team_participants(team=self.team)
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
+                            fio = self.team_participants_form.cleaned_data[field_name]
                             user = get_user_by_fio(
-                                fio=self.team_participants_form.cleaned_data[field_name],
+                                fio=fio,
                             )
-                            if user:
-                                join_team(
-                                    user=user,
-                                    team=self.team,
-                                    event=self.event,
-                                )
+                            join_team(
+                                event=self.event,
+                                user=user,
+                                team=self.team,
+                                fio=fio,
+                            )
             else:
                 if (
                     self.team_participants_form.is_valid() and
@@ -761,15 +765,16 @@ class EditParticipantEventView(
                     disband_team_participants(team=self.team)
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
+                            fio = self.team_participants_form.cleaned_data[field_name]
                             user = get_user_by_fio(
-                                fio=self.team_participants_form.cleaned_data[field_name],
+                                fio=fio,
                             )
-                            if user:
-                                join_team(
-                                    user=user,
-                                    team=self.team,
-                                    event=self.event,
-                                )
+                            join_team(
+                                event=self.event,
+                                user=user,
+                                team=self.team,
+                                fio=fio,
+                            )
 
         return self.render_to_response(
             context={
@@ -915,6 +920,11 @@ class EventSolutionView(
                     solution.team = self.team
             solution.event = self.event
             solution.save()
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                'Решение отравленно',
+            )
         return self.render_to_response(
             context={
                 'team_or_participant_form': self.team_or_participant_form,

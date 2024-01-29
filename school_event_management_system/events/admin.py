@@ -76,6 +76,13 @@ class EventAdmin(admin.ModelAdmin):
             },
         ),
         (
+            'Настройки регистрации конкурса', {
+                'fields': (
+                    'need_account',
+                ),
+            },
+        ),
+        (
             'Даты',
             {
                 'fields': (
@@ -134,12 +141,13 @@ class EventAdmin(admin.ModelAdmin):
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = (
         'event',
-        'user',
+        'fio',
         'team',
         'supervisor_fio',
     )
     search_fields = (
         'event__name',
+        'fio',
         'user',
         'team__name',
         'supervisor',

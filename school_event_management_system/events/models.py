@@ -144,6 +144,12 @@ class Event(models.Model):
         null=True,
     )
 
+    need_account = models.BooleanField(
+        verbose_name=_('нужен аккаунт у участников'),
+        blank=True,
+        default=True,
+    )
+
     published = models.BooleanField(
         verbose_name=_('является ли опубликованным'),
         blank=True,
@@ -226,7 +232,14 @@ class Participant(models.Model):
         User,
         verbose_name=_('пользователь'),
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='participant',
+    )
+    fio = models.CharField(
+        verbose_name=_('ФИО ученика'),
+        max_length=255,
+        blank=True,
     )
     team = models.ForeignKey(
         Team,
@@ -270,7 +283,10 @@ class Participant(models.Model):
         verbose_name_plural = _('участники')
 
     def __str__(self):
-        return f'{self.user} {self.event}'
+        if self.user:
+            return f'{self.user} {self.event}'
+        else:
+            return f'{self.fio} {self.event}'
 
 
 class EventDiplomas(models.Model):
@@ -318,6 +334,7 @@ class Solution(models.Model):
     theses = models.CharField(
         verbose_name=_('краткие тезисы'),
         max_length=5120,
+        blank=True,
     )
     topic = models.CharField(
         verbose_name=_('тема проекта'),

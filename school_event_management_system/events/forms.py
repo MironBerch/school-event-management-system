@@ -149,11 +149,13 @@ class TeamParticipantsForm(forms.Form):
             self,
             minimum_number_of_team_members: int,
             maximum_number_of_team_members: int,
+            need_account: bool = True,
             *args,
             **kwargs,
     ):
         super(TeamParticipantsForm, self).__init__(*args, **kwargs)
         self.maximum_number_of_team_members = maximum_number_of_team_members
+        self.need_account = need_account
         for i in range(1, maximum_number_of_team_members + 1):
             required = i <= minimum_number_of_team_members
             self.fields[f'participant_{i}'] = forms.CharField(
@@ -169,9 +171,9 @@ class TeamParticipantsForm(forms.Form):
             fio = cleaned_data.get(field_name)
             if fio:
                 user = get_user_by_fio(fio)
-                if not user:
+                if self.need_account and not user:
                     self.add_error(field_name, 'Нет пользователя с таким ФИО')
-                else:
+                if user:
                     if user.role != 'ученик':
                         self.add_error(field_name, 'Пользователь должен являться учеником')
         return cleaned_data

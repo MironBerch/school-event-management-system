@@ -57,9 +57,11 @@ def join_team(
         user: User,
         team: Team,
         event: Event,
+        fio: str,
 ) -> Participant:
     return Participant.objects.create(
         team=team,
+        fio=fio,
         event=event,
         user=user,
     )
@@ -208,7 +210,7 @@ def create_initial_data_for_team_participants_form(
     initial_data = {}
     for i, participant in enumerate(participants, start=1):
         participant_key = f'participant_{i}'
-        participant_value = f'{participant.user.full_name}'
+        participant_value = f'{participant.fio}'
         initial_data[participant_key] = participant_value
     return initial_data
 
@@ -316,13 +318,15 @@ def get_event_teams(event):
 
 def get_team_participants_fio_string(team):
     participants = team.participants.all()
-    participant_names = [f'{participant.user.full_name}' for participant in participants]
+    participant_names = [f'{participant.fio}' for participant in participants]
     participants_string = ', '.join(participant_names)
     return participants_string
 
 
 def get_team_participants_email_string(team):
     participants = team.participants.all()
+    if not team.event.need_account:
+        return ''
     participant_names = [f'{participant.user.email}' for participant in participants]
     participants_string = ' '.join(participant_names)
     return participants_string
@@ -330,6 +334,8 @@ def get_team_participants_email_string(team):
 
 def get_team_participants_phone_number_string(team):
     participants = team.participants.all()
+    if not team.event.need_account:
+        return ''
     participant_names = [f'{participant.user.profile.phone_number}' for participant in participants]
     participants_string = ' '.join(participant_names)
     return participants_string
