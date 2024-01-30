@@ -311,15 +311,16 @@ class RegisterOnEventView(
                 for field_name, field in self.team_participants_form.fields.items():
                     if field_name.startswith('participant_'):
                         fio = self.team_participants_form.cleaned_data[field_name]
-                        user = get_user_by_fio(
-                            fio=fio,
-                        )
-                        join_team(
-                            event=self.event,
-                            user=user,
-                            team=team,
-                            fio=fio,
-                        )
+                        if fio:
+                            user = get_user_by_fio(
+                                fio=fio,
+                            )
+                            join_team(
+                                event=self.event,
+                                user=user,
+                                team=team,
+                                fio=fio,
+                            )
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -354,15 +355,16 @@ class RegisterOnEventView(
                 for field_name, field in self.team_participants_form.fields.items():
                     if field_name.startswith('participant_'):
                         fio = self.team_participants_form.cleaned_data[field_name]
-                        user = get_user_by_fio(
-                            fio=fio,
-                        )
-                        join_team(
-                            event=self.event,
-                            user=user,
-                            team=team,
-                            fio=fio,
-                        )
+                        if fio:
+                            user = get_user_by_fio(
+                                fio=fio,
+                            )
+                            join_team(
+                                event=self.event,
+                                user=user,
+                                team=team,
+                                fio=fio,
+                            )
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -612,15 +614,16 @@ class EditParticipantEventView(
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
                             fio = self.team_participants_form.cleaned_data[field_name]
-                            user = get_user_by_fio(
-                                fio=fio,
-                            )
-                            join_team(
-                                event=self.event,
-                                user=user,
-                                team=self.participant.team,
-                                fio=fio,
-                            )
+                            if fio:
+                                user = get_user_by_fio(
+                                    fio=fio,
+                                )
+                                join_team(
+                                    event=self.event,
+                                    user=user,
+                                    team=self.participant.team,
+                                    fio=fio,
+                                )
             else:
                 if (
                     self.team_participants_form.is_valid() and
@@ -668,15 +671,16 @@ class EditParticipantEventView(
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
                             fio = self.team_participants_form.cleaned_data[field_name]
-                            user = get_user_by_fio(
-                                fio=fio,
-                            )
-                            join_team(
-                                event=self.event,
-                                user=user,
-                                team=self.participant.team,
-                                fio=fio,
-                            )
+                            if fio:
+                                user = get_user_by_fio(
+                                    fio=fio,
+                                )
+                                join_team(
+                                    event=self.event,
+                                    user=user,
+                                    team=self.participant.team,
+                                    fio=fio,
+                                )
         else:
             if self.event.type == 'Индивидуальное':
                 if self.supervisor_form.is_valid():
@@ -721,15 +725,16 @@ class EditParticipantEventView(
                     for field_name, field in self.team_participants_form.fields.items():
                         if field_name.startswith('participant_'):
                             fio = self.team_participants_form.cleaned_data[field_name]
-                            user = get_user_by_fio(
-                                fio=fio,
-                            )
-                            join_team(
-                                event=self.event,
-                                user=user,
-                                team=self.team,
-                                fio=fio,
-                            )
+                            if fio:
+                                user = get_user_by_fio(
+                                    fio=fio,
+                                )
+                                join_team(
+                                    event=self.event,
+                                    user=user,
+                                    team=self.team,
+                                    fio=fio,
+                                )
             else:
                 if (
                     self.team_participants_form.is_valid() and

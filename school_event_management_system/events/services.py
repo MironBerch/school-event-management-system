@@ -59,6 +59,8 @@ def join_team(
         event: Event,
         fio: str,
 ) -> Participant:
+    if not user and not fio:
+        return None
     return Participant.objects.create(
         team=team,
         fio=fio,
@@ -79,6 +81,7 @@ def join_event(
         return Participant.objects.create(
             event=event,
             user=user,
+            fio=user.full_name,
             supervisor=supervisor,
             supervisor_fio=supervisor.full_name,
             supervisor_email=supervisor.email,
@@ -88,6 +91,7 @@ def join_event(
         return Participant.objects.create(
             event=event,
             user=user,
+            fio=user.full_name,
             supervisor=None,
             supervisor_fio=supervisor_fio,
             supervisor_email=supervisor_email,
@@ -97,9 +101,21 @@ def join_event(
 
 def get_user_diplomas(user: User) -> QuerySet[EventDiplomas]:
     return EventDiplomas.objects.filter(
-        event_id__in=Participant.objects.filter(
-            user=user,
-        ).values_list('event_id', flat=True)
+        Q(
+            event_id__in=Participant.objects.filter(
+                user=user,
+            ).values_list('event_id', flat=True)
+        ) |
+        Q(
+            event_id__in=Team.objects.filter(
+                supervisor=user,
+            ).values_list('event_id', flat=True)
+        ) |
+        Q(
+            event_id__in=Participant.objects.filter(
+                supervisor=user,
+            ).values_list('event_id', flat=True)
+        )
     )
 
 
@@ -343,3 +359,21 @@ def get_team_participants_phone_number_string(team):
 
 def get_team_participants(team):
     return team.participants.all()
+
+
+def get_all_participants_with_supervisor(
+        supervisor: User,
+) -> QuerySet[Participant]:
+    participants = Participant.objects.filter(
+        supervisor=supervisor,
+    )
+    return participants
+
+
+def get_all_teams_with_supervisor(
+        supervisor: User,
+) -> QuerySet[Team]:
+    teams = Team.objects.filter(
+        supervisor=supervisor,
+    )
+    return teams
