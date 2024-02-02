@@ -127,16 +127,19 @@ def create_workbook_for_team_event(event):
                     team.school_class,
                 )
             if letter_string[index] == 'C':
-                if get_team_participants(team=team):
-                    ws[cell] = str(
-                        get_team_participants(
-                            team=team,
-                        ).first().user.profile.school,
-                    )
-                elif team.supervisor:
+                if team.supervisor:
                     ws[cell] = str(
                         team.supervisor.profile.school,
                     )
+                elif get_team_participants(team=team):
+                    try:
+                        ws[cell] = str(
+                            get_team_participants(
+                                team=team,
+                            ).first().user.profile.school,
+                        )
+                    except:  # noqa E722
+                        ws[cell] = ''
                 else:
                     ws[cell] = ''
             if letter_string[index] == 'D':
