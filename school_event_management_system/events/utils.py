@@ -1,4 +1,5 @@
 from openpyxl import Workbook
+from openpyxl.styles import Font
 
 from events.services import (
     get_event_participants,
@@ -36,6 +37,9 @@ def create_workbook_for_individual_event(event):
     ws['H1'] = 'Ссылка на приложенные файлы'
     ws['I1'] = 'Тема проекта'
     ws['J1'] = 'Предмет'
+
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
 
     letter_string = 'ABCDEFGHIJ'
     participant_index = 1
@@ -108,6 +112,9 @@ def create_workbook_for_team_event(event):
     ws['J1'] = 'Ссылка на приложенные файлы'
     ws['K1'] = 'Тема проекта'
     ws['L1'] = 'Предмет'
+
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
 
     letter_string = 'ABCDEFGHIJKL'
     team_index = 1
