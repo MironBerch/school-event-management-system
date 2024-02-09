@@ -40,6 +40,11 @@ docker-compose -f docker-compose-master.yml build
 docker-compose -f docker-compose-master.yml up
 ```
 
+## Документация
+
+- [Документация](./docs/README.md)
+
+
 ## License
 
 This project is licensed under the terms of the Apache-2.0 license.
