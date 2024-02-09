@@ -37,17 +37,15 @@ def create_workbook_for_individual_event(event):
     ws['H1'] = 'Ссылка на приложенные файлы'
     ws['I1'] = 'Тема проекта'
     ws['J1'] = 'Предмет'
+    ws['K1'] = 'Год обучения ученика'
 
-    for cell in ws[1]:
-        cell.font = Font(bold=True)
-
-    letter_string = 'ABCDEFGHIJ'
+    letter_string = 'ABCDEFGHIJK'
     participant_index = 1
     participants = get_event_participants(event=event)
 
     for participant in participants:
         participant_index = participant_index + 1
-        for index in range(10):
+        for index in range(11):
             cell = letter_string[index] + str(participant_index)
             solution = get_participant_solution(event=event, participant=participant)
             if letter_string[index] == 'A':
@@ -89,6 +87,10 @@ def create_workbook_for_individual_event(event):
             if letter_string[index] == 'J':
                 ws[cell] = str(
                     solution.subject if solution else '',
+                )
+            if letter_string[index] == 'K':
+                ws[cell] = str(
+                    participant.user.profile.year_of_study,
                 )
 
     wb.save(f'media/event_{event.id}.xlsx')
