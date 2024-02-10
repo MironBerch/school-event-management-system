@@ -928,7 +928,7 @@ class EventSolutionView(
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                'Решение отравленно',
+                'Решение отравлено',
             )
         return self.render_to_response(
             context={

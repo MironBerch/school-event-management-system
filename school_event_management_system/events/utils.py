@@ -39,6 +39,9 @@ def create_workbook_for_individual_event(event):
     ws['J1'] = 'Предмет'
     ws['K1'] = 'Год обучения ученика'
 
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+
     letter_string = 'ABCDEFGHIJK'
     participant_index = 1
     participants = get_event_participants(event=event)
