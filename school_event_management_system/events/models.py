@@ -195,8 +195,8 @@ class Team(models.Model):
             RegexValidator(
                 regex=r'^\+?[0-9]{7,15}$',
                 message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
-            )
-        ]
+            ),
+        ],
     )
     supervisor_email = models.EmailField(
         verbose_name=_('почта руководителя'),
@@ -269,8 +269,8 @@ class Participant(models.Model):
             RegexValidator(
                 regex=r'^\+?[0-9]{7,15}$',
                 message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
-            )
-        ]
+            ),
+        ],
     )
     supervisor_email = models.EmailField(
         verbose_name=_('почта руководителя'),

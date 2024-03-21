@@ -1,5 +1,3 @@
-from typing import Optional
-
 from celery import shared_task
 
 
@@ -24,7 +22,7 @@ def send_password_reset_code(
         context: dict,
         from_email: str,
         to_email: str,
-        html_email_template_name: Optional[str] = None,
+        html_email_template_name: str | None = None,
 ) -> None:
     from .services import _send_password_reset_email, get_user_by_pk
 

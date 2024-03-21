@@ -230,7 +230,7 @@ class RegisterOnEventView(
                 'participant_form': self.participant_form,
                 'team_form': self.team_form,
                 'team_participants_form': self.team_participants_form,
-            }
+            },
         )
 
     def post(self, request, slug):
@@ -324,7 +324,7 @@ class RegisterOnEventView(
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    f'Комманда \'{team.name}\' успешно зарегистрирована на мероприятии',
+                    f"Комманда \'{team.name}\' успешно зарегистрирована на мероприятии",
                 )
                 return redirect('edit_participant_event', slug=self.event.slug)
         else:
@@ -380,7 +380,7 @@ class RegisterOnEventView(
                 'participant_form': self.participant_form,
                 'team_form': self.team_form,
                 'team_participants_form': self.team_participants_form,
-            }
+            },
         )
 
 
@@ -544,7 +544,7 @@ class EditParticipantEventView(
                 'participants': self.participants,
                 'team_id': self.team_id,
                 'participant_id': self.participant_id,
-            }
+            },
         )
 
     def post(self, request, slug, *args, **kwargs):
@@ -795,7 +795,7 @@ class EditParticipantEventView(
                 'participants': self.participants,
                 'team_id': self.team_id,
                 'participant_id': self.participant_id,
-            }
+            },
         )
 
 
@@ -910,7 +910,7 @@ class EventSolutionView(
                 'participants': self.participants,
                 'team_id': self.team_id,
                 'participant_id': self.participant_id,
-            }
+            },
         )
 
     def post(self, request, slug, *args, **kwargs):
@@ -942,7 +942,7 @@ class EventSolutionView(
                 'participants': self.participants,
                 'team_id': self.team_id,
                 'participant_id': self.participant_id,
-            }
+            },
         )
 
 
@@ -961,7 +961,7 @@ class ParticipantEventsView(
                 'events': get_events_where_user_are_participant(
                     user=request.user,
                 ).order_by('date_of_starting_event'),
-            }
+            },
         )
 
 
@@ -980,7 +980,7 @@ class SupervisorEventsView(
                 'events': get_events_where_user_are_supervisor(
                     user=request.user,
                 ).order_by('date_of_starting_event'),
-            }
+            },
         )
 
 

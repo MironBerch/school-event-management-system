@@ -1,5 +1,4 @@
 from os import environ
-from typing import Optional, Union
 
 from django.contrib.auth.models import Group
 from django.db.models import Q, QuerySet
@@ -22,7 +21,7 @@ def _send_password_reset_email(
         context: dict,
         from_email: str,
         to_email: str,
-        html_email_template_name: Optional[str] = None,
+        html_email_template_name: str | None = None,
 ) -> None:
     """
     Функция для отправки электронного письма с инструкцией по сбросу пароля.
@@ -52,7 +51,7 @@ def _send_password_reset_email(
     )
 
 
-def send_verification_email(*, domain: str, scheme: str, user_id: Union[int, str]) -> None:
+def send_verification_email(*, domain: str, scheme: str, user_id: int | str) -> None:
     user = User.objects.get(pk=user_id)
     subject = 'Активируйте вашу учетную запись'
     text_content = render_to_string(
@@ -94,7 +93,7 @@ def send_verification_link(domain: str, scheme: str, user: User) -> None:
     send_email_verification_code.delay(domain=domain, scheme=scheme, user_id=user_id)
 
 
-def get_user_by_pk(pk: Union[int, str]) -> Optional[User]:
+def get_user_by_pk(pk: int | str) -> User | None:
     return get_object_or_404(User, pk=pk)
 
 
@@ -131,12 +130,12 @@ def get_user_by_fio(fio: str) -> User | None:
             return User.objects.filter(
                 Q(surname=fio_list[0]) &
                 Q(name=fio_list[1]) &
-                Q(patronymic=fio_list[2])
+                Q(patronymic=fio_list[2]),
             ).first()
         else:
             return User.objects.filter(
                 Q(surname=fio_list[0]) &
-                Q(name=fio_list[1])
+                Q(name=fio_list[1]),
             ).first()
     except User.DoesNotExist:
         return None
@@ -151,12 +150,12 @@ def is_user_with_fio_exist(fio: str) -> bool:
             return User.objects.filter(
                 Q(surname=fio_list[0]) &
                 Q(name=fio_list[1]) &
-                Q(patronymic=fio_list[2])
+                Q(patronymic=fio_list[2]),
             ).exists()
         else:
             return User.objects.filter(
                 Q(surname=fio_list[0]) &
-                Q(name=fio_list[1])
+                Q(name=fio_list[1]),
             ).exists()
     except User.DoesNotExist:
         return False

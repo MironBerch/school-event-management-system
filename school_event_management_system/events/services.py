@@ -1,8 +1,10 @@
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
+from django.template.loader import get_template, render_to_string
 
 from accounts.models import User
 from events.models import Event, EventDiplomas, Participant, Solution, Task, Team
+from mailings.services import send_email_with_attachments
 
 
 def get_published_events() -> QuerySet[Event]:
@@ -104,18 +106,18 @@ def get_user_diplomas(user: User) -> QuerySet[EventDiplomas]:
         Q(
             event_id__in=Participant.objects.filter(
                 user=user,
-            ).values_list('event_id', flat=True)
+            ).values_list('event_id', flat=True),
         ) |
         Q(
             event_id__in=Team.objects.filter(
                 supervisor=user,
-            ).values_list('event_id', flat=True)
+            ).values_list('event_id', flat=True),
         ) |
         Q(
             event_id__in=Participant.objects.filter(
                 supervisor=user,
-            ).values_list('event_id', flat=True)
-        )
+            ).values_list('event_id', flat=True),
+        ),
     )
 
 
@@ -130,7 +132,8 @@ def team_with_name_exist_in_event(
 
 
 def is_user_participation_of_event(
-        event: Event, user: User
+        event: Event,
+        user: User,
 ) -> bool:
     return Participant.objects.filter(
         user=user,
@@ -271,7 +274,7 @@ def get_events_where_user_are_participant(
         user: User,
 ) -> QuerySet[Event]:
     return Event.objects.filter(
-        participants__user=user
+        participants__user=user,
     )
 
 
@@ -377,3 +380,68 @@ def get_all_teams_with_supervisor(
         supervisor=supervisor,
     )
     return teams
+
+
+def get_emails_of_event_participants_and_supervisors(event: Event) -> list[str]:
+    emails_set = set()
+    participants = Participant.objects.filter(event=event)
+    for participant in participants:
+        try:
+            emails_set.add(participant.user.email) if participant.user.email else None
+        except Exception:
+            pass
+        emails_set.add(participant.supervisor_fio)
+    return list(emails_set)
+
+
+def get_event_diploma_url(event: Event) -> str | None:
+    try:
+        diploma = EventDiplomas.objects.get(event=event)
+        return diploma.url
+    except Exception:
+        return None
+
+
+def _send_diplomas_notification_email(
+        *,
+        subject_template_name: str,
+        email_template_name: str,
+        context: dict,
+        from_email: str,
+        to_email: str,
+        html_email_template_name: str | None = None,
+) -> None:
+    """
+    Функция для отправки электронного письма с уведомлением о появлении диплома.
+
+    Аргументы:
+    - subject_template_name (строка): Имя шаблона заголовка электронной почты.
+    - email_template_name (строка): Имя шаблона текста электронной почты.
+    - context (словарь): Контекстные данные для заполнения шаблонов.
+    - from_email (строка): Адрес электронной почты отправителя.
+    - to_email (строка): Адрес электронной почты получателя.
+    - html_email_template_name (строка, необязательно): Имя шаблона HTML-электронной почты.
+    """
+
+    subject = render_to_string(subject_template_name, context)
+    subject = ''.join(subject.splitlines())
+    body = render_to_string(email_template_name, context)
+
+    html = get_template(html_email_template_name)
+    html_content = html.render(context)
+
+    send_email_with_attachments(
+        subject=subject,
+        body=body,
+        email_to=[to_email],
+        email_from=from_email,
+        alternatives=[(html_content, 'text/html')],
+    )
+
+
+def notify_about_diplomas_appearance(
+        emails: list[str],
+        event: Event,
+        diploma_url: str,
+):
+    pass
