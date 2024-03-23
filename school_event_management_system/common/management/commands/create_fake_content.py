@@ -97,7 +97,7 @@ class Command(BaseCommand):
         parser.add_argument(
             'coefficient',
             type=float,
-            help='Indicates the coefficient of fakedata'
+            help='Indicates the coefficient of fakedata',
         )
 
     def handle(self, *args: Any, **kwargs: Any) -> None:

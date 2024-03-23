@@ -186,7 +186,7 @@ CKEDITOR_CONFIGS = {
         'height': 'auto',
         'toolbar': 'Custom',
         'toolbar_Basic': [
-            ['Source', '-', 'Bold', 'Italic']
+            ['Source', '-', 'Bold', 'Italic'],
         ],
         'toolbar_Custom': [
             {
@@ -203,7 +203,7 @@ CKEDITOR_CONFIGS = {
             },
             {
                 'name': 'editing',
-                'items': ['Find', 'Replace', '-', 'SelectAll']
+                'items': ['Find', 'Replace', '-', 'SelectAll'],
             },
             '/',
             {

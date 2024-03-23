@@ -18,12 +18,6 @@
                 text-align: center;
                 margin-bottom: 1rem;
             }
-            .wrapper {
-                margin: 2rem auto;
-                width: 100%;
-                padding: 5rem;
-                background-color: #fff;
-            }
             .email-content {
                 max-width: 800px;
                 width: 80%;
@@ -46,28 +40,26 @@
             }
         </style>
     <body>
-        <div class="wrapper">
-            <div class="email-content">
-                <h1 class="header-center">Подтвердите ваш аккаунт</h1>
-                <p>
-                    Спасибо за регистрацию. Подтвердите, что ваш адрес электронной почты — {{ user.email }}, чтобы активировать учетную запись {{ domain }}.:
-                </p>
-                <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}"
-                   class="confirm-button">
-                   ПОДТВЕРДИТЬ
+        <div class="email-content">
+            <h1 class="header-center">Подтвердите ваш аккаунт</h1>
+            <p>
+                Спасибо за регистрацию. Подтвердите, что ваш адрес электронной почты — {{ user.email }}, чтобы активировать учетную запись {{ domain }}.:
+            </p>
+            <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}"
+               class="confirm-button">
+               ПОДТВЕРДИТЬ
+            </a>
+            <p>
+                Спасибо,
+                <br>
+                команда {{ domain }}
+            </p>
+            <div class="email-sub-url">
+                <hr>
+                <p>Если у вас возникли проблемы с нажатием кнопки подтверждения, скопируйте и вставьте приведенный ниже URL-адрес в свой браузер.</p>
+                <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
+                    {{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
                 </a>
-                <p>
-                    Спасибо,
-                    <br>
-                    команда {{ domain }}
-                </p>
-                <div class="email-sub-url">
-                    <hr>
-                    <p>Если у вас возникли проблемы с нажатием кнопки подтверждения, скопируйте и вставьте приведенный ниже URL-адрес в свой браузер.</p>
-                    <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
-                        {{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
-                    </a>
-                </div>
             </div>
         </div>
     </body>

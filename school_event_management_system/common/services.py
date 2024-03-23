@@ -9,5 +9,5 @@ def is_cooldown_ended(key: str) -> bool:
 
 
 def set_key_with_timeout(key: str, timeout: int, value: int) -> Any:
-    """Установите пару ключ-значение в Redis с указанным таймаутом.."""
+    """Установите пару ключ-значение в Redis с указанным таймаутом."""
     return redis_connection.setex(key, timeout, value)

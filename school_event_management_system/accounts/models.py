@@ -146,8 +146,8 @@ class Profile(models.Model):
             RegexValidator(
                 regex=r'^\+?[0-9]{7,15}$',
                 message='Номер телефона необходимо ввести в формате: +XXXXXXXXXXXXX.',
-            )
-        ]
+            ),
+        ],
     )
 
     user: User = models.OneToOneField(

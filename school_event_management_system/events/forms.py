@@ -103,7 +103,7 @@ class SupervisorForm(forms.Form):
         if not user and not email:
             raise forms.ValidationError(
                 'Руководитель с таким ФИО не зарегистрирован в системе. \
-                Напишите почту руководителя.'
+                Напишите почту руководителя.',
             )
         return email
 
@@ -114,7 +114,7 @@ class SupervisorForm(forms.Form):
         if not user and not phone_number:
             raise forms.ValidationError(
                 'Руководитель с таким ФИО не зарегистрирован в системе. \
-                Напишите номер телефона руководителя.'
+                Напишите номер телефона руководителя.',
             )
         return phone_number
 

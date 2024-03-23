@@ -33,7 +33,7 @@ class MailingCreateView(
             context={
                 'mailing_form': self.mailing_form,
                 'recipients_form': self.recipients_form,
-            }
+            },
         )
 
     def post(self, request: HttpRequest):
@@ -41,5 +41,5 @@ class MailingCreateView(
             context={
                 'mailing_form': self.mailing_form,
                 'recipients_form': self.recipients_form,
-            }
+            },
         )

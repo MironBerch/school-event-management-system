@@ -4,6 +4,7 @@ from django.template.loader import get_template, render_to_string
 
 from accounts.models import User
 from events.models import Event, EventDiplomas, Participant, Solution, Task, Team
+from events.tasks import send_notify_about_diplomas_appearance_email
 from mailings.services import send_email_with_attachments
 
 
@@ -383,56 +384,54 @@ def get_all_teams_with_supervisor(
 
 
 def get_emails_of_event_participants_and_supervisors(event: Event) -> list[str]:
-    emails_set = set()
+    emails: set = set()
     participants = Participant.objects.filter(event=event)
     for participant in participants:
-        try:
-            emails_set.add(participant.user.email) if participant.user.email else None
-        except Exception:
-            pass
-        emails_set.add(participant.supervisor_fio)
-    return list(emails_set)
+        if participant.user:
+            emails.add(participant.user.email)
+        emails.add(participant.supervisor_email)
+    return list(emails)
 
 
-def get_event_diploma_url(event: Event) -> str | None:
+def get_event_diplomas_url(event: Event) -> str | None:
     try:
-        diploma = EventDiplomas.objects.get(event=event)
-        return diploma.url
+        diplomas = EventDiplomas.objects.get(event=event)
+        return diplomas.url
     except Exception:
         return None
 
 
 def _send_diplomas_notification_email(
         *,
-        subject_template_name: str,
-        email_template_name: str,
-        context: dict,
+        domain: str,
         from_email: str,
         to_email: str,
-        html_email_template_name: str | None = None,
+        diplomas_url: str,
+        event: str,
 ) -> None:
     """
     Функция для отправки электронного письма с уведомлением о появлении диплома.
-
-    Аргументы:
-    - subject_template_name (строка): Имя шаблона заголовка электронной почты.
-    - email_template_name (строка): Имя шаблона текста электронной почты.
-    - context (словарь): Контекстные данные для заполнения шаблонов.
-    - from_email (строка): Адрес электронной почты отправителя.
-    - to_email (строка): Адрес электронной почты получателя.
-    - html_email_template_name (строка, необязательно): Имя шаблона HTML-электронной почты.
     """
-
-    subject = render_to_string(subject_template_name, context)
-    subject = ''.join(subject.splitlines())
-    body = render_to_string(email_template_name, context)
-
-    html = get_template(html_email_template_name)
-    html_content = html.render(context)
-
+    subject = 'Появились дипломы за участие в мероприятии'
+    text_content = render_to_string(
+        template_name='diplomas/notify_about_diplomas_appearance_email.html',
+        context={
+            'diplomas_url': diplomas_url,
+            'event': event,
+            'domain': domain,
+        },
+    )
+    html = get_template(template_name='diplomas/notify_about_diplomas_appearance_email.html')
+    html_content = html.render(
+        context={
+            'diplomas_url': diplomas_url,
+            'event': event,
+            'domain': domain,
+        },
+    )
     send_email_with_attachments(
         subject=subject,
-        body=body,
+        body=text_content,
         email_to=[to_email],
         email_from=from_email,
         alternatives=[(html_content, 'text/html')],
@@ -440,8 +439,17 @@ def _send_diplomas_notification_email(
 
 
 def notify_about_diplomas_appearance(
+        from_email: str,
+        domain: str,
+        event: str,
+        diplomas_url: str,
         emails: list[str],
-        event: Event,
-        diploma_url: str,
-):
-    pass
+) -> None:
+    for email in emails:
+        send_notify_about_diplomas_appearance_email.delay(
+            domain=domain,
+            from_email=from_email,
+            to_email=email,
+            diplomas_url=diplomas_url,
+            event=event,
+        )
