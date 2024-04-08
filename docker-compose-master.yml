@@ -72,6 +72,23 @@ services:
     depends_on:
       - server
 
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ${ENV}
+    restart: always
+    ports:
+      - "5555:5555"
+    environment:
+      - "CELERY_BROKER_URL=${CELERY_BROKER_URL}"
+    command: >
+      sh -c "cd /home/app/web/school_event_management_system/
+      && celery -A config flower --port=5555 --url_prefix=/celery"
+    depends_on:
+      - redis
+
 volumes:
   static_volume:
   media_volume:

@@ -48,6 +48,7 @@ ENV=.env
 SECRET_KEY=
 DEBUG=
 SCHOOL_NAME=
+DOMAIN=
 
 # Postgres
 DB_NAME=
@@ -71,5 +72,5 @@ CELERY_BROKER_URL=redis://redis:6379
 
 - Запустите эту команду - она запустит проект
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose-master.yml up --build -d
+docker-compose -f docker-compose-master.yml up --build -d
 ```

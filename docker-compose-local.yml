@@ -59,5 +59,15 @@ services:
       - redis
       - server
 
+  flower:
+    image: mher/flower:2.0.1
+    restart: always
+    ports:
+      - "5555:5555"
+    environment:
+      - "CELERY_BROKER_URL=${CELERY_BROKER_URL}"
+    depends_on:
+      - redis
+
 volumes:
   postgres_volume:

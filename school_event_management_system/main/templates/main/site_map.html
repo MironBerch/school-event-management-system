@@ -18,6 +18,13 @@
                     {% if request.user.is_superuser or request.user.is_staff %}
                         <li><a href="{% url 'admin:index' %}">Панель администратора</a></li>
                     {% endif %}
+                    {% if request.user.is_superuser or request.user.is_staff %}
+                        {% if debug %}
+                            <li><a href='http://127.0.0.1:5555'>Мониторинг задач</a></li>
+                        {% else %}
+                            <li><a href='/celery/'>Мониторинг задач</a></li>
+                        {% endif %}
+                    {% endif %}
                 </ul>
             </div>
         </div>
