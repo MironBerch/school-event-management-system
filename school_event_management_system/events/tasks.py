@@ -1,7 +1,11 @@
 from celery import shared_task
 
 
-@shared_task
+@shared_task(
+    bind=True,
+    max_retries=1,
+    default_retry_delay=60 * 60 * 24,  # Один день в секундах
+)
 def send_notify_about_diplomas_appearance_email(
         from_email: str,
         to_email: str,
